@@ -1,13 +1,21 @@
 viz {
-
+  #chart {
+    margin: 50px;
+  }
   .y.axis {
    
     stroke: black;
    
     line {
-   
       stroke: black;
-   
+    }
+
+    .tick {
+      text {
+          fill: #ddd;
+          font: 10px sans-serif;
+          text-anchor: middle;
+      }
     }
   }
   .x.axis {
@@ -16,5 +24,20 @@ viz {
       stroke: black;
     }
   }
-
+  .ranges {
+    &.Female {
+      rect{
+        stroke: pink;
+        stroke-dasharray: 5, 10;
+        fill: transparent;
+      }
+    }
+    &.Male {
+      rect{
+        stroke: blue;
+        stroke-dasharray: 5, 10;
+        fill: transparent;
+      }
+    }
+  }
 }
