@@ -11,10 +11,12 @@ angular.module('soccercomparisonApp')
     restrict: 'E'
     link: (scope, element, attrs) ->
         padding = {top: 50, left: 50, right: 50, bottom: 50}
-        height = 1000
+        height = 600
         width = 1000
         chart = d3.select(element[0]).append('svg')
                                          .attr("id", "chart")
+                                         .attr("height", height)
+                                         .attr("width", width)
         yScale = d3.scale.linear()
                             .range([height, 0]) # note that the yaxis is inverted! 0 = top
         yAxis = d3.svg.axis()
@@ -31,7 +33,7 @@ angular.module('soccercomparisonApp')
         d3.csv('data/goalscorers.csv', (requestdata) ->
             scope.data = requestdata
             
-            yMax = d3.max(scope.data, (d) -> +d.Goals)            
+            yMax = d3.max(scope.data, (d) -> +(d.Goals))            
             yScale.domain([0, yMax])
             xScale.domain(scope.data.map((d) -> 
                 d.Player)) 
@@ -60,14 +62,11 @@ angular.module('soccercomparisonApp')
                                     else
                                         return "ranges Female"
                                         )
-                                .append("rect") # place holder bars - as discussed, each goal should be a data point e.g a <circle>
+                                .append("rect") # Leaving placeholder bars for styling/interaction
                                 .attr("width", xScale.rangeBand())
                                 .attr("height", (d) -> height - yScale(+d.Goals))
                                 .attr("x", (d) -> xScale(d.Player))
-                                .attr("y", (d) -> yScale(d.Goals)) # note that the yaxis is inverted! 0 = top
-                                
-
-
+                                .attr("y", (d) -> return yScale(d.Goals)) # note that the yaxis is inverted! 0 = top
             return
             )
   )
