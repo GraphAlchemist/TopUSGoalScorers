@@ -51,8 +51,16 @@ angular.module('soccercomparisonApp')
                                 .attr("transform", "translate(0, #{height})")
                                 .call(xAxis)
                               .selectAll("text")
-                                .attr("id", (d) -> console.log(d); return d)
-                                .attr("transform", "rotate(-90)")
+                                .attr("id", (d) -> return d)
+                                .attr("transform", (d, i)-> 
+                                    data = scope.data[i]
+                                    yIfTopEleven = (height - yScale(-data.Goals)) + 80
+
+                                    x = xScale.rangeBand() - 40
+                                    y = if parseInt(data.Goals) > 45 then yIfTopEleven else - 80
+                                    # y = (if parseInt(yScale(data.Goals)) > 30 then 60 else 20)
+                                    console.log(y)
+                                    return "translate(#{x},#{y}) rotate(-90)")
 
             playerGoals = chart.selectAll(".ranges")
                                 .data(scope.data)
@@ -64,14 +72,32 @@ angular.module('soccercomparisonApp')
                                         return "ranges Female"
                                         )
                                 .append("rect") # Leaving placeholder bars for styling/interaction
-                                .attr("x", (d) -> xScale(d.Player))
+                                .attr("x", (d) -> xScale(d.Player) - 10)
                                 .attr("y", (d) -> return yScale(d.Goals)) # note that the yaxis is inverted! 0 = top
                                 .attr("width", xScale.rangeBand())
-                                # .attr("height", 0)
-                                # .transition()
-                                # .ease("elastic")
-                                # .delay(7000)
                                 .attr("height", (d) -> height - yScale(+d.Goals))
+
+            goalSprites = chart.selectAll("circle")
+                               .data(scope.data.map((d)->
+                                  goals = parseInt(d.Goals)
+                                  return new Array(goals) ))
+                               .enter()
+                               .append("circle")
+                               .attr("r", "3")
+                               .attr("cx", (d,i) -> 
+                                    data = scope.data[i]
+                                    xScale(data.Player))
+                               .attr("cy", (d,i) ->
+                                    data = scope.data[i]
+                                    # console.log(yScale(data.Goals))
+                                    "#{yScale(data.Goals) - 50}")
+                                # [
+                                # 0:[0,1,2],
+                                # 1:[0,1,2],
+                                # 2:[0,1,2]
+                                # ]
+
             return
             )
+
   )

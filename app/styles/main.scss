@@ -15,6 +15,7 @@ viz {
           fill: #ddd;
           font: 10px sans-serif;
           text-anchor: middle;
+          opacity: 0.4;
       }
     }
   }
@@ -22,6 +23,12 @@ viz {
     stroke: black;
     line {
       stroke: black;
+    }
+    text {
+      opacity: 0.8;
+    }
+    text:hover {
+      opacity: 1;
     }
   }
   .ranges {
