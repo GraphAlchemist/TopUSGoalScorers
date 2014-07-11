@@ -11,7 +11,7 @@ angular.module('soccercomparisonApp')
     restrict: 'E'
     link: (scope, element, attrs) ->
         padding = {top: 50, left: 50, right: 50, bottom: 50}
-        height = 600
+        height = 800
         width = 1000
         chart = d3.select(element[0]).append('svg')
                                          .attr("id", "chart")
@@ -21,7 +21,9 @@ angular.module('soccercomparisonApp')
                             .range([height, 0]) # note that the yaxis is inverted! 0 = top
         yAxis = d3.svg.axis()
                     .scale(yScale)
-                    .orient("left")
+                    .orient("right")
+                    .ticks(16)
+                    .tickSize(width)
 
         xScale = d3.scale.ordinal()
                         .rangeRoundBands([0, width], .1)
@@ -58,13 +60,12 @@ angular.module('soccercomparisonApp')
 
                                     x = xScale.rangeBand() - 40
                                     y = if parseInt(data.Goals) > 45 then yIfTopEleven else - 80
-                                    # y = (if parseInt(yScale(data.Goals)) > 30 then 60 else 20)
-                                    console.log(y)
                                     return "translate(#{x},#{y}) rotate(-90)")
 
             playerGoals = chart.selectAll(".ranges")
                                 .data(scope.data)
                                 .enter().append("g")
+                                .attr("id", (d,i) -> return "group-#{i}")
                                 .attr("class", (d) ->
                                     if d.Gender is "Male"
                                         return "ranges Male"
@@ -77,25 +78,33 @@ angular.module('soccercomparisonApp')
                                 .attr("width", xScale.rangeBand())
                                 .attr("height", (d) -> height - yScale(+d.Goals))
 
-            goalSprites = chart.selectAll("circle")
-                               .data(scope.data.map((d)->
-                                  goals = parseInt(d.Goals)
-                                  return new Array(goals) ))
+            goalSprites = chart.selectAll("g.ranges")
+                               .data(scope.data.map((d,i)->
+                                  goals = [1..parseInt(d.Goals)]
+                                  return goals ))
+                               # .enter()
+                               .selectAll("circle")
+                               .data((d,i)-> return d)
                                .enter()
                                .append("circle")
-                               .attr("r", "3")
-                               .attr("cx", (d,i) -> 
-                                    data = scope.data[i]
-                                    xScale(data.Player))
+                               .attr("r", "2")
+                               .attr("cx", (d,i) ->
+                                    rect = d3.select(this.parentNode).select("rect")  
+                                    max = rect.attr("x")
+                                    min = max - 5 
+                            
+                                    randomX = Math.random() * (max - min) + min 
+                                    offset = 10
+                            
+                                    return  randomX + offset)
                                .attr("cy", (d,i) ->
-                                    data = scope.data[i]
-                                    # console.log(yScale(data.Goals))
-                                    "#{yScale(data.Goals) - 50}")
-                                # [
-                                # 0:[0,1,2],
-                                # 1:[0,1,2],
-                                # 2:[0,1,2]
-                                # ]
+                                    g = d3.select(this.parentNode)
+                                    rect = g.select("rect")
+                                    rectY = parseInt rect.attr("y")
+                                    rectHeight = parseInt rect.attr("height")
+                                    ballPadding = 5
+
+                                    return rectY + rectHeight - (i * ballPadding) )
 
             return
             )

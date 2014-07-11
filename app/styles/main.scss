@@ -3,14 +3,14 @@ viz {
     margin: 50px;
   }
   .y.axis {
-   
+    fill: transparent;
     stroke: black;
-   
-    line {
-      stroke: black;
-    }
 
     .tick {
+      line {
+      opacity: 0.3;
+      stroke: black;
+    }
       text {
           fill: #ddd;
           font: 10px sans-serif;
@@ -33,24 +33,21 @@ viz {
   }
   .ranges {
     &.Female {
-      rect{
-        stroke: pink;
-        stroke-dasharray: 5, 10;
-        fill: transparent;
-      }
+      fill:transparent;
       :hover {
           fill: pink;
         };
     }
     &.Male {
-      rect{
-        stroke: blue;
-        stroke-dasharray: 5, 10;
-        fill: transparent;
-      }
+      fill: transparent;
       :hover {
-        fill: blue;
+        fill: lightblue;
+        /*fill-opacity: 0.7;*/
       };
     }
+  }
+  circle {
+    fill: black;
+    stroke: black;
   }
 }
