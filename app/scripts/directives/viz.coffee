@@ -51,6 +51,7 @@ angular.module('soccercomparisonApp')
                                 .attr("transform", "translate(0, #{height})")
                                 .call(xAxis)
                               .selectAll("text")
+                                .attr("id", (d) -> console.log(d); return d)
                                 .attr("transform", "rotate(-90)")
 
             playerGoals = chart.selectAll(".ranges")
@@ -63,10 +64,14 @@ angular.module('soccercomparisonApp')
                                         return "ranges Female"
                                         )
                                 .append("rect") # Leaving placeholder bars for styling/interaction
-                                .attr("width", xScale.rangeBand())
-                                .attr("height", (d) -> height - yScale(+d.Goals))
                                 .attr("x", (d) -> xScale(d.Player))
                                 .attr("y", (d) -> return yScale(d.Goals)) # note that the yaxis is inverted! 0 = top
+                                .attr("width", xScale.rangeBand())
+                                # .attr("height", 0)
+                                # .transition()
+                                # .ease("elastic")
+                                # .delay(7000)
+                                .attr("height", (d) -> height - yScale(+d.Goals))
             return
             )
   )

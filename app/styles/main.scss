@@ -31,6 +31,9 @@ viz {
         stroke-dasharray: 5, 10;
         fill: transparent;
       }
+      :hover {
+          fill: pink;
+        };
     }
     &.Male {
       rect{
@@ -38,6 +41,9 @@ viz {
         stroke-dasharray: 5, 10;
         fill: transparent;
       }
+      :hover {
+        fill: blue;
+      };
     }
   }
 }
