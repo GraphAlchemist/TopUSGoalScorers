@@ -60,12 +60,14 @@ viz {
   }
   .ranges {
     &.Female {
-      fill: #bf0c34;
-      fill-opacity: 1;
-      :hover {
+      rect {
+        fill: #bf0c34;
+        fill-opacity: 1;
+        :hover {
           fill-opacity: 0.8;
         };
-    }
+      };
+    };
     &.Male {
       fill: #014B96;
       :hover {
