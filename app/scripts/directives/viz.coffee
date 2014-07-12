@@ -10,13 +10,16 @@ angular.module('soccercomparisonApp')
   .directive('viz', ->
     restrict: 'E'
     link: (scope, element, attrs) ->
-        padding = {top: 50, left: 50, right: 50, bottom: 50}
         height = 800
-        width = 1000
+        width = 1200
+
         chart = d3.select(element[0]).append('svg')
                                          .attr("id", "chart")
                                          .attr("height", height)
                                          .attr("width", width)
+                                         .append('g')
+
+        
         yScale = d3.scale.linear()
                             .range([height, 0]) # note that the yaxis is inverted! 0 = top
         yAxis = d3.svg.axis()
@@ -31,6 +34,8 @@ angular.module('soccercomparisonApp')
                     .scale(xScale)
                     .orient("bottom")                           
         
+        
+
         # grab data
         d3.csv('data/goalscorers.csv', (requestdata) ->
             scope.data = requestdata
@@ -62,6 +67,10 @@ angular.module('soccercomparisonApp')
                                     y = if parseInt(data.Goals) > 45 then yIfTopEleven else - 80
                                     return "translate(#{x},#{y}) rotate(-90)")
 
+            statBox = chart.append("rect")
+                           .attr("class", "stat")
+                           .attr({'x': width/2, 'y':0, 'height': height/2, 'width': width/2 })
+
             playerGoals = chart.selectAll(".ranges")
                                 .data(scope.data)
                                 .enter().append("g")
@@ -72,7 +81,7 @@ angular.module('soccercomparisonApp')
                                     else
                                         return "ranges Female"
                                         )
-                                .append("rect") # Leaving placeholder bars for styling/interaction
+                                .append("rect")
                                 .attr("x", (d) -> xScale(d.Player) - 10)
                                 .attr("y", (d) -> return yScale(d.Goals)) # note that the yaxis is inverted! 0 = top
                                 .attr("width", xScale.rangeBand())
@@ -82,29 +91,50 @@ angular.module('soccercomparisonApp')
                                .data(scope.data.map((d,i)->
                                   goals = [1..parseInt(d.Goals)]
                                   return goals ))
-                               # .enter()
                                .selectAll("circle")
                                .data((d,i)-> return d)
                                .enter()
                                .append("circle")
-                               .attr("r", "2")
+                               .attr("r", "1.5")
                                .attr("cx", (d,i) ->
                                     rect = d3.select(this.parentNode).select("rect")  
                                     max = rect.attr("x")
-                                    min = max - 5 
+                                    min = max - 10 
                             
                                     randomX = Math.random() * (max - min) + min 
-                                    offset = 10
+                                    offset = 40
                             
                                     return  randomX + offset)
-                               .attr("cy", (d,i) ->
+                                .attr("cy", (d,i) ->
                                     g = d3.select(this.parentNode)
-                                    rect = g.select("rect")
-                                    rectY = parseInt rect.attr("y")
-                                    rectHeight = parseInt rect.attr("height")
+                                    dataIndex = parseInt g.attr("id").slice(6)
+                                    data = scope.data[dataIndex]
                                     ballPadding = 5
 
-                                    return rectY + rectHeight - (i * ballPadding) )
+                                    return yScale(+data.Goals) + (i * ballPadding) )
+                                .classed("goal", true)
+        #O===========O
+        #| Behaviors |
+        #O===========O
+        # Zoom
+            zoom = d3.behavior
+                     .zoom()
+                     .scaleExtent([1,10])
+                     .on("zoom", ->
+                          chart.attr("transform", "translate(#{d3.event.translate}) scale(#{d3.event.scale})"))
+            chart.call(zoom)     
+
+        # Mouse over player-bar
+            d3.selectAll(".ranges")
+              .on("mouseover", -> 
+                  d3.select(".stat")
+                    .classed("shown", true))
+
+        # Mouse over goalSprite
+            d3.selectAll(".goal")
+              .on("mouseover", -> 
+                  console.log "yo")
+              
 
             return
             )
