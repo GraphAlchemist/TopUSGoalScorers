@@ -34,18 +34,17 @@ angular.module('soccercomparisonApp')
                         .rangeRoundBands([0, width], .1)
         xAxis = d3.svg.axis()
                     .scale(xScale)
-                    .orient("bottom")                           
-        
-        
+                    .orient("bottom")                                   
 
         # grab data
         d3.csv('data/goalscorers.csv', (requestdata) ->
             scope.data = requestdata
-            
-            yMax = d3.max(scope.data, (d) -> +(d.Goals))
-            yMin = d3.min(scope.data, (d) -> +(d.Goals))          
-            yScale.domain([0, yMax + 30])
-            xScale.domain(scope.data.map((d) -> d.Player)) 
+            goalData = requestdata.map (d)-> [1..parseInt d.Goals ]
+
+            yMax = d3.max scope.data, (d) -> +(d.Goals)
+            yMin = d3.min scope.data, (d) -> +(d.Goals)          
+            yScale.domain [0, yMax + 30]
+            xScale.domain scope.data.map (d) -> d.Player 
             
 
             yAxisGroup = chart.append("g")
@@ -65,25 +64,25 @@ angular.module('soccercomparisonApp')
 
             # colors
             femaleColors = d3.scale.linear()
-                                    .domain([yMin, yMax])
-                                    .range(colorbrewer.Reds[3])
+                                    .domain [yMin, yMax]
+                                    .range colorbrewer.Reds[3]
             maleColors = d3.scale.linear()
-                                  .domain([yMin, yMax])
-                                  .range(colorbrewer.Blues[3])
+                                  .domain [yMin, yMax]
+                                  .range colorbrewer.Blues[3]
 
             playerGoals = chart.selectAll(".ranges")
                                 .data(scope.data)
                                 .enter().append("g")
-                                .attr("id", (d,i) -> return "group-#{i}")
-                                .attr("class", (d, i) ->
+                                .attr("id", (d,i) -> "group-#{i}")
+                                .attr("class", (d) ->
                                     if d.Gender is "Male"
-                                        return "ranges Male"
+                                        "ranges Male"
                                     else
-                                        return "ranges Female"
+                                        "ranges Female"
                                         )
                                 .append("rect")
                                 .attr("x", (d) -> xScale(d.Player)) # adjust labels, not position of bars
-                                .attr("y", (d) -> return yScale(+d.Goals + barPadding)) # note that the yaxis is inverted! 0 = top
+                                .attr("y", (d) -> yScale(+d.Goals + barPadding)) # note that the yaxis is inverted! 0 = top
                                 .attr("width", xScale.rangeBand())
                                 .attr("height", (d) -> height - yScale(+d.Goals + barPadding)) # extra padding for top of goals
                                 .style("fill", (d) ->
@@ -92,26 +91,6 @@ angular.module('soccercomparisonApp')
                                   else if d.Gender is "Male" then maleColors((+d.Goals * 6) + 140 )
                                   )
 
-
-            goalSprites = chart.selectAll("g.ranges")
-                               .data(scope.data.map((d,i)->
-                                  goals = [1..parseInt(d.Goals)]
-                                  return goals ))
-                               .selectAll("circle")
-                               .data((d,i)-> return d)
-                               .enter()
-                               .append("circle")
-                               .attr("r", "1.0")
-                               .attr("cx", () ->
-                                    rect = d3.select(@parentNode).select("rect")  
-                                    padding = {left: 5, right: 5}
-                                    # lets use rangeband instead
-                                    max = +rect.attr("x") + xScale.rangeBand() - padding.right
-                                    min = +rect.attr("x") + padding.left
-                                    randomX = Math.random() * (max - min) + min 
-                                    )
-                                .attr("cy", (d,i) ->  yScale(d))
-                                .classed("goal", true)
             # adjust labels to top left of bar
             d3.selectAll("g.x.axis .tick")
                 .attr("id", (d) -> return d)
@@ -129,36 +108,55 @@ angular.module('soccercomparisonApp')
         # Zoom
             zoom = d3.behavior
                      .zoom()
-                     .scaleExtent([1,10])
+                     .scaleExtent [1,10]
                      .on("zoom", ->
                           chart.attr("transform", "translate(#{d3.event.translate}) scale(#{d3.event.scale})"))
-            chart.call(zoom)     
+            chart.call zoom
 
         # Mouse over player-bar
-            tipHTML = (d, i) ->
-              console.log i
-              return """
-                      <div class='tip-container'>
-                        <div class='name'><h4>#{d.Player}<h4></div>
-                        <div class='youtube'>
-                          <iframe width='280' height='158' src='http://www.youtube.com/embed/jCar99nTSxA?rel=0&qv=small' frameborder='0'></iframe>
-                        </div>
-                      </div>
-                     """
+            tipHTML = (d) ->
+              """
+              <div class='tip-container'>
+                <div class='name'><h4>#{d.Player}<h4></div>
+                <div class='youtube'>
+                  <!--<iframe width='280' height='158' src='http://www.youtube.com/embed/jCar99nTSxA?rel=0&qv=small' frameborder='0'></iframe>-->
+                </div>
+              </div>
+              """
 
             tip = d3.tip()
                     .attr("class", "d3-tip")
-                    .html((d)-> return tipHTML(d))
+                    .html((d)-> tipHTML d )
                     .offset([10, 120])
                     
+            playerGoals.call tip
+            playerGoals.on "mouseover", (d)-> tip.show d
 
-            playerGoals.call(tip)
-            playerGoals.on("mouseover", (d, i)-> tip.show(d, i))
         # Mouse over goalSprite
-            d3.selectAll(".goal")
-              .on("mouseover", -> 
-                  d3.select(".youtube").html("Youtube vid of goal"))
+            d3.selectAll(".goal").on "mouseover", -> 
+              d3.select(".youtube").html("Youtube vid of goal")
+
+            goalSprites = chart.selectAll("g.ranges")
+                               .data(goalData)
+                               .selectAll("circle")
+                               .data((d)-> d)
+                               .enter()
+                               .append("circle")
+                               .attr("r", "1.0")
+                               .attr("cx", () ->
+                                    rect = d3.select(@parentNode).select("rect")  
+                                    padding = {left: 12, right: 12}
+                                    # lets use rangeband instead
+                                    max = +rect.attr("x") + xScale.rangeBand() - padding.right
+                                    min = +rect.attr("x") + padding.left
+                                    randomX = Math.random() * (max - min) + min 
+                                    )
+                                .attr("cy", (d) ->  yScale(d))
+                                .classed("goal", true)
+
+
             return
+
             )
 
   )
