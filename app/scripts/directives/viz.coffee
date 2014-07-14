@@ -63,17 +63,14 @@ angular.module('soccercomparisonApp')
                                 .attr("y", "-10")
                                 .attr("x", xScale.rangeBand()/2)
 
-            # statBox = chart.append("rect")
-                           # .attr("class", "stat")
-                           # .attr({'x': width/2, 'y':0, 'height': height/2, 'width': width/2 }
             # colors
             femaleColors = d3.scale.linear()
                                     .domain([yMin, yMax])
-                                    .range(colorbrewer.Reds[5])
+                                    .range(colorbrewer.Reds[3])
             maleColors = d3.scale.linear()
                                   .domain([yMin, yMax])
-                                  .range(colorbrewer.Blues[5])
-                                                      
+                                  .range(colorbrewer.Blues[3])
+
             playerGoals = chart.selectAll(".ranges")
                                 .data(scope.data)
                                 .enter().append("g")
@@ -90,8 +87,9 @@ angular.module('soccercomparisonApp')
                                 .attr("width", xScale.rangeBand())
                                 .attr("height", (d) -> height - yScale(+d.Goals + barPadding)) # extra padding for top of goals
                                 .style("fill", (d) ->
-                                  if d.Gender is "Female" then femaleColors(+d.Goals)
-                                  else if d.Gender is "Male" then maleColors(+d.Goals)
+                                  # genderColors((d.Goals * rangeOfContrast) + manualDarkening)
+                                  if d.Gender is "Female" then femaleColors((+d.Goals * 2.5) + 80)
+                                  else if d.Gender is "Male" then maleColors((+d.Goals * 6) + 140 )
                                   )
 
 
@@ -113,7 +111,6 @@ angular.module('soccercomparisonApp')
                                     randomX = Math.random() * (max - min) + min 
                                     )
                                 .attr("cy", (d,i) ->  yScale(d))
-                                    # return yScale(+data.Goals) + (i * ballPadding) )
                                 .classed("goal", true)
             # adjust labels to top left of bar
             d3.selectAll("g.x.axis .tick")
@@ -125,15 +122,6 @@ angular.module('soccercomparisonApp')
                     x = rect.attr("x")
                     y = height - +rect.attr("y") 
                     "translate(#{x}, -#{y}) rotate(-30)")
-
-
-      #         &.Female {
-      # rect {
-      #   fill: #bf0c34;
-      #   fill-opacity: 1;
-      #   :hover {
-      #     fill-opacity: 0.8;
-      #   };
 
         #O===========O
         #| Behaviors |
@@ -147,17 +135,29 @@ angular.module('soccercomparisonApp')
             chart.call(zoom)     
 
         # Mouse over player-bar
-            d3.selectAll(".ranges")
-              .on("mouseover", -> 
-                  d3.select(".stat")
-                    .classed("shown", true))
+            tipHTML = (d, i) ->
+              console.log i
+              return """
+                      <div class='tip-container'>
+                        <div class='name'><h4>#{d.Player}<h4></div>
+                        <div class='youtube'>
+                          <iframe width='280' height='158' src='http://www.youtube.com/embed/jCar99nTSxA?rel=0&qv=small' frameborder='0'></iframe>
+                        </div>
+                      </div>
+                     """
 
+            tip = d3.tip()
+                    .attr("class", "d3-tip")
+                    .html((d)-> return tipHTML(d))
+                    .offset([10, 120])
+                    
+
+            playerGoals.call(tip)
+            playerGoals.on("mouseover", (d, i)-> tip.show(d, i))
         # Mouse over goalSprite
             d3.selectAll(".goal")
               .on("mouseover", -> 
-                  console.log "yo")
-              
-
+                  d3.select(".youtube").html("Youtube vid of goal"))
             return
             )
 

@@ -1,6 +1,7 @@
 viz {
   #chart {
     margin: 50px;
+    margin-top: 80px;
   }
 
   .stat {
@@ -60,12 +61,9 @@ viz {
   }
   .ranges {
     &.Female {
-      rect {
-        fill: #bf0c34;
-        fill-opacity: 1;
-        :hover {
-          fill-opacity: 0.8;
-        };
+      fill: #bf0c34;
+      :hover {
+        fill-opacity: 0.8;
       };
     };
     &.Male {
@@ -78,5 +76,25 @@ viz {
   circle {
     fill: black;
     stroke: black;
+  }
+}
+
+.d3-tip {
+  width: 304px;
+  height: 214px;
+  background-color: rgba(187,187,187,0.6);
+  border-style: solid;
+  border-width: 2px;
+  border-color: #AAA;
+  border-radius: 20px;
+  text-align: center;
+  .tip-container {
+    width: 300px;
+    height: 210px;
+    background-color: rgba(221,221,221,0.6);
+    border-style: solid;
+    border-width: 2px;
+    border-color: #CCC; 
+    border-radius: 20px;
   }
 }
