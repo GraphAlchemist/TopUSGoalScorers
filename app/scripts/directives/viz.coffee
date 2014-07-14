@@ -37,7 +37,7 @@ angular.module('soccercomparisonApp')
                     .orient("bottom")                                   
 
         # grab data
-        d3.csv('data/goalscorers.csv', (requestdata) ->
+        d3.json('data/goalscorers.json', (requestdata) ->
             scope.data = requestdata
             goalData = requestdata.map (d)-> [1..parseInt d.Goals ]
 
@@ -102,6 +102,24 @@ angular.module('soccercomparisonApp')
                     y = height - +rect.attr("y") 
                     "translate(#{x}, -#{y}) rotate(-30)")
 
+            goalSprites = d3.selectAll("g.ranges")
+                            .data(goalData)
+                            .selectAll("circle")
+                            .data((d)-> d)
+                            .enter()
+                            .append("circle")
+                            .attr("r", "1.5")
+                            .attr("cx", () ->
+                                 rect = d3.select(@parentNode).select("rect")  
+                                 padding = {left: 12, right: 12}
+                                 # lets use rangeband instead
+                                 max = +rect.attr("x") + xScale.rangeBand() - padding.right
+                                 min = +rect.attr("x") + padding.left
+                                 randomX = Math.random() * (max - min) + min 
+                                 )
+                             .attr("cy", (d) ->  yScale(d))
+                             .classed("goal", true)
+
         #O===========O
         #| Behaviors |
         #O===========O
@@ -119,7 +137,7 @@ angular.module('soccercomparisonApp')
               <div class='tip-container'>
                 <div class='name'><h4>#{d.Player}<h4></div>
                 <div class='youtube'>
-                  <!--<iframe width='280' height='158' src='http://www.youtube.com/embed/jCar99nTSxA?rel=0&qv=small' frameborder='0'></iframe>-->
+                  <iframe width='280' height='158' src='http://www.youtube.com/embed/#{d.Vid}?rel=0&amp;vq=small&amp;modestbranding=1' frameborder='0'></iframe>
                 </div>
               </div>
               """
@@ -130,30 +148,11 @@ angular.module('soccercomparisonApp')
                     .offset([10, 120])
                     
             playerGoals.call tip
-            playerGoals.on "mouseover", (d)-> tip.show d
-
-        # Mouse over goalSprite
-            d3.selectAll(".goal").on "mouseover", -> 
-              d3.select(".youtube").html("Youtube vid of goal")
-
-            goalSprites = chart.selectAll("g.ranges")
-                               .data(goalData)
-                               .selectAll("circle")
-                               .data((d)-> d)
-                               .enter()
-                               .append("circle")
-                               .attr("r", "1.0")
-                               .attr("cx", () ->
-                                    rect = d3.select(@parentNode).select("rect")  
-                                    padding = {left: 12, right: 12}
-                                    # lets use rangeband instead
-                                    max = +rect.attr("x") + xScale.rangeBand() - padding.right
-                                    min = +rect.attr("x") + padding.left
-                                    randomX = Math.random() * (max - min) + min 
-                                    )
-                                .attr("cy", (d) ->  yScale(d))
-                                .classed("goal", true)
-
+            playerGoals.on "mouseover", -> 
+              # there has to be a better way to get top-level data
+              playerIndex = parseInt d3.select(this.parentNode).attr("id").match(/\d\d?/)
+              d = scope.data[playerIndex]
+              tip.show d
 
             return
 
