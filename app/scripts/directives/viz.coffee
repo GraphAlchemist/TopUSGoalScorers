@@ -171,24 +171,29 @@ angular.module('soccercomparisonApp')
                     y = height - +rect.attr("y") 
                     "translate(#{x}, -#{y}) rotate(-30)")
 
-            # goalSprites = d3.selectAll("g.ranges")
-            #                 .data(goalData)
-            #                 .selectAll("circle")
-            #                 .data((d)-> d)
-            #                 .enter()
-            #                 .append("circle")
-            #                 .attr("r", "1.5")
-            #                 .attr("cx", () ->
-            #                      rect = d3.select(@parentNode).select("rect")  
-            #                      padding = {left: 26, right: 26}
-            #                      # lets use rangeband instead
-            #                      max = +rect.attr("x") + xScale.rangeBand() - padding.right
-            #                      min = +rect.attr("x") + padding.left
-            #                      randomX = Math.random() * (max - min) + min 
-            #                      )
-            #                  .attr("cy", (d) ->  yScale(d))
-            #                  .classed("goal", true)
-
+            goalSprites = d3.selectAll("g.ranges")
+                            .data(goalData)
+                            .selectAll("circle")
+                            .data((d)-> d)
+                            .enter()
+                            .append("circle")
+                            .attr("r", "1.5")
+                            .attr("cx", () ->
+                                 rect = d3.select(@parentNode).select("rect")  
+                                 padding = {left: 18, right: 18}
+                                 # lets use rangeband instead
+                                 max = +rect.attr("x") + xScale.rangeBand() - padding.right
+                                 min = +rect.attr("x") + padding.left
+                                 randomX = Math.random() * (max - min) + min 
+                                 )
+                             .attr("cy", (d) ->  yScale(d))
+                             .classed("goal", true)
+                             .attr("style", "opacity: 0;")
+                             .transition()
+                             .delay((d,i)-> 
+                                  # console.log 1800 + i * (i / 5)
+                                  1800 + i * ( i / 5 ) )
+                             .attr("style", "opacity: 1;")
         # Zoom
             zoom = d3.behavior
                      .zoom()
@@ -196,6 +201,18 @@ angular.module('soccercomparisonApp')
                      .on("zoom", ->
                           chart.attr("transform", "translate(#{d3.event.translate}) scale(#{d3.event.scale})"))
             chart.call zoom
+
+        # Flash y-axis ticks on goalSprite build.
+            d3.selectAll(".y.axis .tick:nth-child(18) line, .y.axis .tick:nth-child(18) text")
+              .attr("style", "opacity: 0.3; stroke-width:1px;")
+              .transition()
+              .delay(6000)
+              .duration(2000)
+              .attr("style", "opacity: 0.8; stroke-width: 2px;")
+              .transition()
+              .duration(4000)
+              .attr("style", "opacity: 0.3; stroke-width: 1px;")
+
 
             return
 

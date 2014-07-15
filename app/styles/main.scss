@@ -8,21 +8,13 @@ viz {
     fill: transparent;
     stroke: black;
 
-    .tick {
-      line {
+    .tick, line, text {
       opacity: 0.3;
-      stroke: black;
       :hover {
-        stroke-width: 30px;
         opacity: 1;
-      };
-    }
-      text {
-          z-index: 2;
-          fill: black !important;
-          font: 10px sans-serif;
-          text-anchor: middle;
-          opacity: 0.4;
+      }
+      :hover * {
+        opacity: 1;
       }
     }
   }
