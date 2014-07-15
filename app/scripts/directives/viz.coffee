@@ -23,7 +23,7 @@ angular.module('soccercomparisonApp')
 
         
         yScale = d3.scale.linear()
-                            .range([height, 0]) # note that the yaxis is inverted! 0 = top
+                    .range([height, 0]) # note that the yaxis is inverted! 0 = top
         yAxis = d3.svg.axis()
                     .scale(yScale)
                     .orient("right")
@@ -36,10 +36,51 @@ angular.module('soccercomparisonApp')
                     .scale(xScale)
                     .orient("bottom")                                   
 
+        makeLegend = ()->
+                      fadeIn = () ->
+                        this.attr("style", "opacity:0;")
+                            .transition()
+                            .duration(4200)
+                            .attr("style", "opacity:1;")
+
+                      chart.append("rect")
+                           .attr({"x": width-160, "y": 0, "height": 101, "width": 160})
+                           .classed("legend", true)
+                           .call(fadeIn)
+                      chart.append("rect")
+                           .classed("male-legend", true)
+                           .attr({"x": width-140, "y": 20, "height": 16, "width": 16})
+                           .call(fadeIn)
+                      chart.append("rect")
+                           .attr({"x": width-140, "y": 46, "height": 16, "width": 16})
+                           .classed("female-legend", true)
+                           .call(fadeIn)
+                      chart.append("text")
+                           .text("Male")
+                           .classed("male-legend", true)
+                           .attr({"x": width-120, "y": 32})
+                           .call(fadeIn)
+                      chart.append("text")
+                           .text("Female")
+                           .classed("female-legend", true)
+                           .attr({"x": width-120, "y": 58})
+                           .call(fadeIn)
+                      chart.append("text")
+                           .text("Player: ")
+                           .classed("stat-legend", true)
+                           .attr({"id": "player-legend", "x": width-340, "y": 12})
+                           .call(fadeIn)
+                      chart.append("text")
+                           .text("Goals : ")
+                           .classed("stat-legend", true)
+                           .attr({"id": "goals-legend", "x": width-140, "y": 12})
+                           .call(fadeIn)
+        makeLegend()
+
         # grab data
         d3.json('data/goalscorers.json', (requestdata) ->
             scope.data = requestdata
-            goalData = requestdata.map (d)-> [1..parseInt d.Goals ]
+            goalData = requestdata.map (d)-> [1..parseInt d.Goals]
 
             yMax = d3.max scope.data, (d) -> +(d.Goals)
             yMin = d3.min scope.data, (d) -> +(d.Goals)          
@@ -70,67 +111,6 @@ angular.module('soccercomparisonApp')
                                   .domain [yMin, yMax]
                                   .range colorbrewer.Blues[3]
 
-            playerGoals = chart.selectAll(".ranges")
-                                .data(scope.data)
-                                .enter().append("g")
-                                .attr("id", (d,i) -> "group-#{i}")
-                                .attr("class", (d) ->
-                                    if d.Gender is "Male"
-                                        "ranges Male"
-                                    else
-                                        "ranges Female"
-                                        )
-                                .append("rect")
-                                .attr("x", (d) -> xScale(d.Player)) # adjust labels, not position of bars
-                                .attr("y", (d) -> yScale(+d.Goals + barPadding)) # note that the yaxis is inverted! 0 = top
-                                .attr("width", xScale.rangeBand())
-                                .attr("height", (d) -> height - yScale(+d.Goals + barPadding)) # extra padding for top of goals
-                                .style("fill", (d) ->
-                                  # genderColors((d.Goals * rangeOfContrast) + manualDarkening)
-                                  if d.Gender is "Female" then femaleColors((+d.Goals * 2.5) + 80)
-                                  else if d.Gender is "Male" then maleColors((+d.Goals * 6) + 140 )
-                                  )
-
-            # adjust labels to top left of bar
-            d3.selectAll("g.x.axis .tick")
-                .attr("id", (d) -> return d)
-                .attr("transform", (d, i) ->
-                  #put the tick on the top right corner of the rect
-                  rect = d3.select("g#group-#{i} rect")
-                  if not rect.empty()
-                    x = rect.attr("x")
-                    y = height - +rect.attr("y") 
-                    "translate(#{x}, -#{y}) rotate(-30)")
-
-            goalSprites = d3.selectAll("g.ranges")
-                            .data(goalData)
-                            .selectAll("circle")
-                            .data((d)-> d)
-                            .enter()
-                            .append("circle")
-                            .attr("r", "1.5")
-                            .attr("cx", () ->
-                                 rect = d3.select(@parentNode).select("rect")  
-                                 padding = {left: 12, right: 12}
-                                 # lets use rangeband instead
-                                 max = +rect.attr("x") + xScale.rangeBand() - padding.right
-                                 min = +rect.attr("x") + padding.left
-                                 randomX = Math.random() * (max - min) + min 
-                                 )
-                             .attr("cy", (d) ->  yScale(d))
-                             .classed("goal", true)
-
-        #O===========O
-        #| Behaviors |
-        #O===========O
-        # Zoom
-            zoom = d3.behavior
-                     .zoom()
-                     .scaleExtent [1,10]
-                     .on("zoom", ->
-                          chart.attr("transform", "translate(#{d3.event.translate}) scale(#{d3.event.scale})"))
-            chart.call zoom
-
         # Mouse over player-bar
             tipHTML = (d) ->
               """
@@ -146,13 +126,76 @@ angular.module('soccercomparisonApp')
                     .attr("class", "d3-tip")
                     .html((d)-> tipHTML d )
                     .offset([10, 120])
-                    
-            playerGoals.call tip
-            playerGoals.on "mouseover", -> 
-              # there has to be a better way to get top-level data
-              playerIndex = parseInt d3.select(this.parentNode).attr("id").match(/\d\d?/)
-              d = scope.data[playerIndex]
-              tip.show d
+
+            playerGoals = chart.selectAll(".ranges")
+                                .data(scope.data)
+                                .enter().append("g")
+                                .attr("id", (d,i) -> "group-#{i}")
+                                .attr("class", (d) ->
+                                    if d.Gender is "Male"
+                                        "ranges Male"
+                                    else
+                                        "ranges Female"
+                                        )
+                                .append("rect")
+                                .attr("x", (d) -> xScale(d.Player)) # adjust labels, not position of bars
+                                .attr("y", (d) -> yScale(+d.Goals + barPadding)) # note that the yaxis is inverted! 0 = top
+                                .attr("width", xScale.rangeBand())
+                                .attr("height", 0)
+                                .call(tip)
+                                .on "mouseover", ->
+                                    # there has to be a better way to get top-level data
+                                    playerIndex = parseInt d3.select(this.parentNode).attr("id").match(/\d\d?/)
+                                    data = scope.data[playerIndex]
+                                    tip.show data
+                                
+                                .transition()
+                                .duration(1800)
+                                .ease("bounce")
+                                
+                                .attr("height", (d) -> height - yScale(+d.Goals + barPadding)) # extra padding for top of goals
+                                .style("fill", (d) ->
+                                  # genderColors((d.Goals * rangeOfContrast) + manualDarkening)
+                                  if d.Gender is "Female" then femaleColors((+d.Goals * 2.5) + 80)
+                                  else if d.Gender is "Male" then maleColors((+d.Goals * 6) + 140 )
+                                  )
+                                
+            # adjust labels to top left of bar
+            d3.selectAll("g.x.axis .tick")
+                .attr("id", (d) -> return d)
+                .attr("transform", (d, i) ->
+                  #put the tick on the top right corner of the rect
+                  rect = d3.select("g#group-#{i} rect")
+                  if not rect.empty()
+                    x = rect.attr("x")
+                    y = height - +rect.attr("y") 
+                    "translate(#{x}, -#{y}) rotate(-30)")
+
+            # goalSprites = d3.selectAll("g.ranges")
+            #                 .data(goalData)
+            #                 .selectAll("circle")
+            #                 .data((d)-> d)
+            #                 .enter()
+            #                 .append("circle")
+            #                 .attr("r", "1.5")
+            #                 .attr("cx", () ->
+            #                      rect = d3.select(@parentNode).select("rect")  
+            #                      padding = {left: 26, right: 26}
+            #                      # lets use rangeband instead
+            #                      max = +rect.attr("x") + xScale.rangeBand() - padding.right
+            #                      min = +rect.attr("x") + padding.left
+            #                      randomX = Math.random() * (max - min) + min 
+            #                      )
+            #                  .attr("cy", (d) ->  yScale(d))
+            #                  .classed("goal", true)
+
+        # Zoom
+            zoom = d3.behavior
+                     .zoom()
+                     .scaleExtent [1,10]
+                     .on("zoom", ->
+                          chart.attr("transform", "translate(#{d3.event.translate}) scale(#{d3.event.scale})"))
+            chart.call zoom
 
             return
 
