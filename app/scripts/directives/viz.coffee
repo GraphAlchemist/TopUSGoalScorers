@@ -48,7 +48,17 @@ angular.module('soccercomparisonApp')
         legendHTML =
             """
             <div class='legend'>
-              <h1>This is the legend!</h1>
+              <div id="name-legend"></div>
+              <div id="goals-legend"></div>
+              
+              <div id='male-legend'>
+                <div id='male-box'></div>
+                <h2 id='male-text'>Male</h2>
+              </div>
+              <div id='female-legend'>
+                <div id='female-box'></div>
+                <h2 id='female-text'>Female</h2>
+              </div>
             </div>
             """
         
@@ -174,6 +184,10 @@ angular.module('soccercomparisonApp')
                                   vidTip.show(scope.data[i])
                                   # goalNumber = Math.floor(yScale.invert(d3.event.y))
                                   # goalTick = d3.select("#goal-#{goalNumber}").style("display", "inline")
+                                  playerIndex = d3.select(this.parentNode).attr("id").match(/\d\d?/)
+                                  playerData  = scope.data[playerIndex]
+                                  d3.select("#name-legend").text(playerData.Player)
+                                  d3.select("#goals-legend").text("Goals: #{playerData.Goals}")
                                   )
                                 .transition()
                                 .duration(bounceDelay)

@@ -1,10 +1,35 @@
+.legend {
+  font-weight: lighter;
+  font-size: 20px;
+
+  #male-legend {
+    #male-box {
+      display: inline-block;
+      width: 30px;
+      height: 30px;
+      background-color: lightblue;
+    }
+    #male-text{
+      display: inline-block;
+    }
+  }
+  #female-legend {
+    #female-box {
+      display: inline-block;
+      width: 30px;
+      height: 30px;
+      background-color: red;
+    }
+    #female-text{
+      display: inline-block;
+    }
+  }
+}
+
 viz {
   #chart {
     margin: 50px;
     margin-top: 80px;
-  }
-  .legend {
-
   }
   .y.axis {
     fill: transparent;
