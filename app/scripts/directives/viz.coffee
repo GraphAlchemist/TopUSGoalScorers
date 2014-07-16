@@ -10,6 +10,7 @@ angular.module('soccercomparisonApp')
   .directive('viz', ->
     restrict: 'E'
     link: (scope, element, attrs) ->
+        bounceDelay = 1200
         goalColors = d3.shuffle([
                                 "#DD79FF", "#FFFC00",
                                 "#00FF30", "#5168FF",
@@ -175,7 +176,7 @@ angular.module('soccercomparisonApp')
                                   # goalTick = d3.select("#goal-#{goalNumber}").style("display", "inline")
                                   )
                                 .transition()
-                                .duration(1800)
+                                .duration(bounceDelay)
                                 .ease("bounce")
                                 .attr("height", (d) -> height - yScale(+d.Goals + barPadding)) # extra padding for top of goals
                                 .style("fill", (d) ->
@@ -218,7 +219,7 @@ angular.module('soccercomparisonApp')
                              .style("opacity", 0)
                              .transition()
                              .delay((d,i)-> 
-                                  1800 + i * ( i / 5 ) )
+                                  bounceDelay + i * ( i / 10 ) )
                              .style("opacity", 1)
                              .style("fill", () ->
                                 goalColors[Math.floor(Math.random() * goalColors.length)]
