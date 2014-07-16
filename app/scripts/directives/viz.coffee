@@ -43,14 +43,29 @@ angular.module('soccercomparisonApp')
                         .rangeRoundBands([0, width], .1)
         xAxis = d3.svg.axis()
                     .scale(xScale)
-                    .orient("bottom")                                   
+                    .orient("bottom")                       
+
+        scrubBar = chart.append("line")
+                        .attr("id", "scrubBar")
+                        .attr({"x1": 0, "y1": -1, "x2": width, "y2": -1})
+        
+        xAxisNum = chart.append("text")
+                        .attr("id", "xAxisNum")
+                        .attr({"x": width, "y": -1})
+
+        chart.on("mousemove", ()->
+          y = d3.mouse(this)[1]
+          
+          d3.select("#scrubBar").attr({"y1": y,"y2": y})
+          d3.select("#xAxisNum").attr({"y": y}).text(y)
+          )         
 
         legendHTML =
             """
             <div class='legend'>
               <div id="name-legend"></div>
               <div id="goals-legend"></div>
-              
+
               <div id='male-legend'>
                 <div id='male-box'></div>
                 <h2 id='male-text'>Male</h2>
@@ -68,49 +83,6 @@ angular.module('soccercomparisonApp')
                   .direction('sw')
                   .offset([0, width - margin.right])
 
-        # fadeIn = () ->
-        #     @attr("style", "opacity:0;")
-        #         .transition()
-        #         .duration(4200)
-        #         .attr("style", "opacity:1;")
-        
-        # chart.call(legend)
-  
-          # chart.on("mouseover", legend.show)
-                      # chart.append("rect")
-                      #      .attr({"x": width-160, "y": 0, "height": 101, "width": 160})
-                      #      .classed("legend", true)
-                      #      .call(fadeIn)
-                      # chart.append("rect")
-                      #      .classed("male-legend", true)
-                      #      .attr({"x": width-140, "y": 20, "height": 16, "width": 16})
-                      #      .call(fadeIn)
-                      # chart.append("rect")
-                      #      .attr({"x": width-140, "y": 46, "height": 16, "width": 16})
-                      #      .classed("female-legend", true)
-                      #      .call(fadeIn)
-                      # chart.append("text")
-                      #      .text("Male")
-                      #      .classed("male-legend", true)
-                      #      .attr({"x": width-120, "y": 32})
-                      #      .call(fadeIn)
-                      # chart.append("text")
-                      #      .text("Female")
-                      #      .classed("female-legend", true)
-                      #      .attr({"x": width-120, "y": 58})
-                      #      .call(fadeIn)
-                      # chart.append("text")
-                      #      .text("Player: ")
-                      #      .classed("stat-legend", true)
-                      #      .attr({"id": "player-legend", "x": width-340, "y": 12})
-                      #      .call(fadeIn)
-                      # chart.append("text")
-                      #      .text("Goals : ")
-                      #      .classed("stat-legend", true)
-                      #      .attr({"id": "goals-legend", "x": width-140, "y": 12})
-                      #      .call(fadeIn)
-        # makeLegend()
-
         # grab data
         d3.json('data/goalscorers.json', (requestdata) ->
             scope.data = requestdata
@@ -120,8 +92,9 @@ angular.module('soccercomparisonApp')
             yMin = d3.min scope.data, (d) -> +(d.Goals)          
             yScale.domain [0, yMax + 30]
             xScale.domain scope.data.map (d) -> d.Player 
-            
+
             yAxis.ticks(yScale.domain()[1])
+
             yAxisGroup = chart.append("g")
                                 .attr("class", "y axis")
                                 .call(yAxis)

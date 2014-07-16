@@ -30,6 +30,14 @@ viz {
   #chart {
     margin: 50px;
     margin-top: 80px;
+    #scrubBar {
+      stroke: #000;
+      stroke-width: 0.5px;
+      stroke-dasharray: 1,1;
+    }
+    #xAxisNum {
+      fill: #000;
+    }
   }
   .y.axis {
     fill: transparent;
