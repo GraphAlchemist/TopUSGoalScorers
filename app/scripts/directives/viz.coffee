@@ -219,6 +219,21 @@ angular.module('soccercomparisonApp')
               .duration(4000)
               .attr("style", "opacity: 0.3; stroke-width: 1px;")
 
+            d3.select("#male-legend")
+              .on("mouseenter", ->
+                  d3.selectAll("g.ranges.Male rect")
+                    .classed("legend-hover", true))
+              .on("mouseleave", ->
+                  d3.selectAll("g.ranges.Male rect")
+                    .classed("legend-hover", false))
+
+            d3.select("#female-legend")
+              .on("mouseenter", ->
+                  d3.selectAll("g.ranges.Female rect")
+                    .classed("legend-hover", true))
+              .on("mouseleave", ->
+                  d3.selectAll("g.ranges.Female rect")
+                    .classed("legend-hover", false))
             return
 
             )
