@@ -117,21 +117,20 @@ angular.module('soccercomparisonApp')
                                         "ranges Female"
                                         )
                                 # .call(vidTip)
-                                .on("mouseover", (d, i) ->
-                                  # vidTip.show(scope.data[i])
+                                .on("mouseenter", (d, i) ->
 
                                   playerData  = scope.data[i]
                                   playerHTML = """
                                                 <h3>#{playerData.Player} scored #{playerData.Goals} goals in #{playerData.Caps}</h3>
                                                 <div class='youtube'>
-                                                  <iframe width='280' height='158' src='http://www.youtube.com/embed/#{playerData.Vid}?rel=0&amp;vq=small&amp;modestbranding=1' frameborder='0'></iframe>
+                                                  <iframe width='360' height='204' src='http://www.youtube.com/embed/#{playerData.Vid}?rel=0&amp;vq=small&amp;modestbranding=1' frameborder='0'></iframe>
                                                 </div>
                                                """
-                                  
-                                  d3.select("#player-legend").html(playerHTML)
-                                  d3.select(".youtube").transition().duration(1800).ease("cubic").style("opacity", "1")                                  
-                                  d3.select("#name-legend").text(scope.data[i].Player)
-                                  d3.select("#goals-legend").text("Goals: #{scope.data[i].Goals}")                                  
+                                  if d3.select("#player-legend").html().search(playerData.Vid) == (-1)
+                                    d3.select("#player-legend").html(playerHTML)
+                                    d3.select(".youtube").transition().duration(1800).ease("cubic").style("opacity", "1")                                  
+                                    d3.select("#name-legend").text(scope.data[i].Player)
+                                    d3.select("#goals-legend").text("Goals: #{scope.data[i].Goals}")                                  
                                   )
                                 .append("rect")
                                 .attr("x", (d) -> 
@@ -184,6 +183,7 @@ angular.module('soccercomparisonApp')
                              .attr("cy", (d) ->  yScale(d))
                              .classed("goal", true)
                              .style("opacity", 0)
+                             # .on("mouseover", -> d3.select(this).style({"fill": "white", "fill-opacity": 1}))
                              .transition()
                              .delay((d,i)-> 
                                   bounceDelay + i * ( i / 10 ) )
@@ -224,7 +224,7 @@ angular.module('soccercomparisonApp')
             chart.on("mousemove", ()->
               y = d3.mouse(this)[1]
               goalNum = Math.floor(yScale.invert(y))          
-              d3.select("#scrubBar").attr({"y1": y,"y2": y})
+              d3.select("#scrubBar").attr({"y1": y - 2,"y2": y - 2})
               d3.select("#xAxisNum").attr({"y": y}).text(goalNum)
               records = [167,158,130,105,100,74,60,57,53,50,46,39,34,30,24,23,21,19,17]
               if goalNum in records

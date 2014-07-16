@@ -61,6 +61,7 @@ viz {
   margin-top: 80px;
   #chart {
     #scrubBar {
+      pointer-events: none;
       stroke: #000;
       stroke-width: 0.5px;
       stroke-dasharray: 1,1;
@@ -109,12 +110,12 @@ viz {
     }
   }
   .ranges {
-    stroke-width: 0;
+    stroke-width: 1;
     &.Female {
       :hover {
         fill-opacity: 0.8;
         transition: 0.3s ease;
-        stroke-width: 2px;
+        stroke-width: 3px;
         stroke-opacity: 0.8 !important;
       };
     };
@@ -122,17 +123,18 @@ viz {
       :hover {
         fill-opacity: 0.8;
         transition: 0.5s ease;
-        stroke-width: 2px;
+        stroke-width: 3px;
         stroke-opacity: 0.8 !important;
       }
     }
-  }
   circle {
     fill: black;
     fill-opacity: 0.5;
-    /*stroke-fill: white;*/
-    stroke-opacity: 1;
     stroke-width: 0 !important;
+    :hover {
+      fill-opacity: 1;
+    }
+    }
   }
 }
 
