@@ -11,15 +11,9 @@ angular.module('soccercomparisonApp')
     restrict: 'E'
     link: (scope, element, attrs) ->
         bounceDelay = 1200
-        goalColors = d3.shuffle([
-                                "#DD79FF", "#FFFC00",
-                                "#00FF30", "#5168FF",
-                                "#00C0FF", "#FF004B",
-                                "#00CDCD", "#f83f00",
-                                "#f800df", "#ff8d8f",
-                                "#ffcd00", "#184fff",
-                                "#ff7e00"
-                                ])
+
+        goalColors = { "Male": ["#FFF", "#008"], "Female": ["#FFF", "#700"] }
+        
         margin = {top: 20, left: 20, bottom: 20, right: 20}
         scaleFactor = 0.8
         height = angular.element(document).height() * scaleFactor - margin.top - margin.bottom
@@ -192,7 +186,7 @@ angular.module('soccercomparisonApp')
                             .data((d)-> d)
                             .enter()
                             .append("circle")
-                            .attr("r", "1.5")
+                            .attr("r", "2.3")
                             .attr("cx", () ->
                                  rect = d3.select(@parentNode).select("rect")  
                                  padding = {left: 18, right: 18}
@@ -208,8 +202,10 @@ angular.module('soccercomparisonApp')
                              .delay((d,i)-> 
                                   bounceDelay + i * ( i / 10 ) )
                              .style("opacity", 1)
-                             .style("fill", () ->
-                                goalColors[Math.floor(Math.random() * goalColors.length)]
+                             .style("fill", (d) ->
+                                gender = if d3.select(this.parentNode).classed("Male") then "Male" else "Female"
+                                colors = goalColors[gender]
+                                colors[Math.floor(Math.random() * 2)]
                               )
         # Zoom
             zoom = d3.behavior
