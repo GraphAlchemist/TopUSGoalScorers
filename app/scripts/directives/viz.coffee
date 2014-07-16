@@ -10,6 +10,15 @@ angular.module('soccercomparisonApp')
   .directive('viz', ->
     restrict: 'E'
     link: (scope, element, attrs) ->
+        goalColors = d3.shuffle([
+                                "#DD79FF", "#FFFC00",
+                                "#00FF30", "#5168FF",
+                                "#00C0FF", "#FF004B",
+                                "#00CDCD", "#f83f00",
+                                "#f800df", "#ff8d8f",
+                                "#ffcd00", "#184fff",
+                                "#ff7e00"
+                                ])
         margin = {top: 20, left: 20, bottom: 20, right: 20}
         scaleFactor = 0.8
         height = angular.element(document).height() * scaleFactor - margin.top - margin.bottom
@@ -27,7 +36,6 @@ angular.module('soccercomparisonApp')
         yAxis = d3.svg.axis()
                     .scale(yScale)
                     .orient("right")
-                    .ticks(16)
                     .tickSize(width)
 
         xScale = d3.scale.ordinal()
@@ -36,46 +44,61 @@ angular.module('soccercomparisonApp')
                     .scale(xScale)
                     .orient("bottom")                                   
 
-        makeLegend = ()->
-                      fadeIn = () ->
-                        this.attr("style", "opacity:0;")
-                            .transition()
-                            .duration(4200)
-                            .attr("style", "opacity:1;")
+        legendHTML =
+            """
+            <div class='legend'>
+              <h1>This is the legend!</h1>
+            </div>
+            """
+        
+        legend = d3.tip()
+                  .attr("class", "d3-tip legend")
+                  .html(legendHTML)
+                  .direction('sw')
+                  .offset([0, width - margin.right])
 
-                      chart.append("rect")
-                           .attr({"x": width-160, "y": 0, "height": 101, "width": 160})
-                           .classed("legend", true)
-                           .call(fadeIn)
-                      chart.append("rect")
-                           .classed("male-legend", true)
-                           .attr({"x": width-140, "y": 20, "height": 16, "width": 16})
-                           .call(fadeIn)
-                      chart.append("rect")
-                           .attr({"x": width-140, "y": 46, "height": 16, "width": 16})
-                           .classed("female-legend", true)
-                           .call(fadeIn)
-                      chart.append("text")
-                           .text("Male")
-                           .classed("male-legend", true)
-                           .attr({"x": width-120, "y": 32})
-                           .call(fadeIn)
-                      chart.append("text")
-                           .text("Female")
-                           .classed("female-legend", true)
-                           .attr({"x": width-120, "y": 58})
-                           .call(fadeIn)
-                      chart.append("text")
-                           .text("Player: ")
-                           .classed("stat-legend", true)
-                           .attr({"id": "player-legend", "x": width-340, "y": 12})
-                           .call(fadeIn)
-                      chart.append("text")
-                           .text("Goals : ")
-                           .classed("stat-legend", true)
-                           .attr({"id": "goals-legend", "x": width-140, "y": 12})
-                           .call(fadeIn)
-        makeLegend()
+        # fadeIn = () ->
+        #     @attr("style", "opacity:0;")
+        #         .transition()
+        #         .duration(4200)
+        #         .attr("style", "opacity:1;")
+        
+        # chart.call(legend)
+  
+          # chart.on("mouseover", legend.show)
+                      # chart.append("rect")
+                      #      .attr({"x": width-160, "y": 0, "height": 101, "width": 160})
+                      #      .classed("legend", true)
+                      #      .call(fadeIn)
+                      # chart.append("rect")
+                      #      .classed("male-legend", true)
+                      #      .attr({"x": width-140, "y": 20, "height": 16, "width": 16})
+                      #      .call(fadeIn)
+                      # chart.append("rect")
+                      #      .attr({"x": width-140, "y": 46, "height": 16, "width": 16})
+                      #      .classed("female-legend", true)
+                      #      .call(fadeIn)
+                      # chart.append("text")
+                      #      .text("Male")
+                      #      .classed("male-legend", true)
+                      #      .attr({"x": width-120, "y": 32})
+                      #      .call(fadeIn)
+                      # chart.append("text")
+                      #      .text("Female")
+                      #      .classed("female-legend", true)
+                      #      .attr({"x": width-120, "y": 58})
+                      #      .call(fadeIn)
+                      # chart.append("text")
+                      #      .text("Player: ")
+                      #      .classed("stat-legend", true)
+                      #      .attr({"id": "player-legend", "x": width-340, "y": 12})
+                      #      .call(fadeIn)
+                      # chart.append("text")
+                      #      .text("Goals : ")
+                      #      .classed("stat-legend", true)
+                      #      .attr({"id": "goals-legend", "x": width-140, "y": 12})
+                      #      .call(fadeIn)
+        # makeLegend()
 
         # grab data
         d3.json('data/goalscorers.json', (requestdata) ->
@@ -87,7 +110,7 @@ angular.module('soccercomparisonApp')
             yScale.domain [0, yMax + 30]
             xScale.domain scope.data.map (d) -> d.Player 
             
-
+            yAxis.ticks(yScale.domain()[1])
             yAxisGroup = chart.append("g")
                                 .attr("class", "y axis")
                                 .call(yAxis)
@@ -112,7 +135,7 @@ angular.module('soccercomparisonApp')
                                   .range colorbrewer.Blues[3]
 
         # Mouse over player-bar
-            tipHTML = (d) ->
+            vidTipHTML = (d) ->
               """
               <div class='tip-container'>
                 <div class='name'><h4>#{d.Player}<h4></div>
@@ -122,43 +145,43 @@ angular.module('soccercomparisonApp')
               </div>
               """
 
-            tip = d3.tip()
+            vidTip = d3.tip()
                     .attr("class", "d3-tip")
-                    .html((d)-> tipHTML d )
+                    .html((d) -> vidTipHTML d )
                     .offset([10, 120])
+
+            # showVidTip = ()
 
             playerGoals = chart.selectAll(".ranges")
                                 .data(scope.data)
                                 .enter().append("g")
-                                .attr("id", (d,i) -> "group-#{i}")
+                                .attr("id", (d, i) -> "group-#{i}")
                                 .attr("class", (d) ->
                                     if d.Gender is "Male"
                                         "ranges Male"
                                     else
                                         "ranges Female"
                                         )
+                                .call(vidTip)
                                 .append("rect")
-                                .attr("x", (d) -> xScale(d.Player)) # adjust labels, not position of bars
+                                .attr("x", (d) -> 
+                                  xScale(d.Player)) # adjust labels, not position of bars
                                 .attr("y", (d) -> yScale(+d.Goals + barPadding)) # note that the yaxis is inverted! 0 = top
                                 .attr("width", xScale.rangeBand())
                                 .attr("height", 0)
-                                .call(tip)
-                                .on "mouseover", ->
-                                    # there has to be a better way to get top-level data
-                                    playerIndex = parseInt d3.select(this.parentNode).attr("id").match(/\d\d?/)
-                                    data = scope.data[playerIndex]
-                                    tip.show data
-                                
+                                .on("mouseover", (d, i) ->
+                                  vidTip.show(scope.data[i])
+                                  # goalNumber = Math.floor(yScale.invert(d3.event.y))
+                                  # goalTick = d3.select("#goal-#{goalNumber}").style("display", "inline")
+                                  )
                                 .transition()
                                 .duration(1800)
                                 .ease("bounce")
-                                
                                 .attr("height", (d) -> height - yScale(+d.Goals + barPadding)) # extra padding for top of goals
                                 .style("fill", (d) ->
                                   # genderColors((d.Goals * rangeOfContrast) + manualDarkening)
                                   if d.Gender is "Female" then femaleColors((+d.Goals * 2.5) + 80)
-                                  else if d.Gender is "Male" then maleColors((+d.Goals * 6) + 140 )
-                                  )
+                                  else if d.Gender is "Male" then maleColors((+d.Goals * 6) + 140 ))
                                 
             # adjust labels to top left of bar
             d3.selectAll("g.x.axis .tick")
@@ -170,6 +193,10 @@ angular.module('soccercomparisonApp')
                     x = rect.attr("x")
                     y = height - +rect.attr("y") 
                     "translate(#{x}, -#{y}) rotate(-30)")
+
+            # give ids to y axis ticks
+            d3.selectAll("g.y.axis .tick")
+              .attr("id", (d) -> "goal-#{d}")
 
             goalSprites = d3.selectAll("g.ranges")
                             .data(goalData)
@@ -188,12 +215,14 @@ angular.module('soccercomparisonApp')
                                  )
                              .attr("cy", (d) ->  yScale(d))
                              .classed("goal", true)
-                             .attr("style", "opacity: 0;")
+                             .style("opacity", 0)
                              .transition()
                              .delay((d,i)-> 
-                                  # console.log 1800 + i * (i / 5)
                                   1800 + i * ( i / 5 ) )
-                             .attr("style", "opacity: 1;")
+                             .style("opacity", 1)
+                             .style("fill", () ->
+                                goalColors[Math.floor(Math.random() * goalColors.length)]
+                              )
         # Zoom
             zoom = d3.behavior
                      .zoom()
@@ -213,9 +242,11 @@ angular.module('soccercomparisonApp')
               .duration(4000)
               .attr("style", "opacity: 0.3; stroke-width: 1px;")
 
-
             return
 
             )
-
+        scope.$on('$viewContentLoaded', () ->
+          chart.call(legend)
+          legend.show("data", chart.node())
+          )
   )
