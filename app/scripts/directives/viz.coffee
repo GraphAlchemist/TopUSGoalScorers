@@ -20,10 +20,11 @@ angular.module('soccercomparisonApp')
         width = angular.element(document).width() * scaleFactor - margin.left - margin.right
 
         chart = d3.select(element[0]).append('svg')
-                                         .attr("id", "chart")
+                                         .attr("id", "chart-container")
                                          .attr("height", height + margin.top + margin.bottom)
                                          .attr("width", width + margin.right + margin.left)
                                          .append('g')
+                                         .attr("id", "chart")
 
         yScale = d3.scale.linear()
                     .range([height, 0]) # note that the yaxis is inverted! 0 = top
@@ -58,28 +59,37 @@ angular.module('soccercomparisonApp')
             d3.select("#scrubBar").attr("style", "")
           )         
 
-        legendHTML =
+        colorLegendHTML =
             """
-            <div class='legend'>
-              <div id="name-legend"></div>
-              <div id="goals-legend"></div>
-
-              <div id='male-legend'>
-                <div id='male-box'></div>
-                <h2 id='male-text'>Men's team</h2>
-              </div>
-              <div id='female-legend'>
-                <div id='female-box'></div>
-                <h2 id='female-text'>Women's team</h2>
-              </div>
-            </div>
+              <div id="color-legend" class="legend">
+                <div id='male-legend'>
+                  <div id='male-box'></div>
+                  <h5 id='male-text'>Men's Team Players</h5>
+                </div>
+                <div id='female-legend'>
+                  <div id='female-box'></div>
+                  <h5 id='female-text'>Women's Team Players</h5>
+                </div>
             """
         
-        legend = d3.tip()
-                  .attr("class", "d3-tip legend")
-                  .html(legendHTML)
+        colorLegend = d3.tip()
+                  .attr("class", "d3-tip")
+                  .html(colorLegendHTML)
                   .direction('sw')
-                  .offset([0, width - margin.right])
+                  .offset([margin.top, width - margin.right])
+
+        playerLegendHTML = (d) ->
+            """
+              <div id="player-legend" class="legend">
+                  <h2>Hover over a player to view stats.</h2>
+              </div>
+            """
+
+        playerLegend = d3.tip()
+                  .attr("class", "d3-tip")
+                  .html(playerLegendHTML)
+                  .direction('sw')
+                  .offset([margin.top, (width - margin.right)/1.5])
 
         # grab data
         d3.json('data/goalscorers.json', (requestdata) ->
@@ -90,8 +100,6 @@ angular.module('soccercomparisonApp')
             yMin = d3.min scope.data, (d) -> +(d.Goals)          
             yScale.domain [0, yMax + 30]
             xScale.domain scope.data.map (d) -> d.Player 
-
-            yAxis.ticks(yScale.domain()[1])
 
             yAxisGroup = chart.append("g")
                                 .attr("class", "y axis")
@@ -115,24 +123,7 @@ angular.module('soccercomparisonApp')
             maleColors = d3.scale.linear()
                                   .domain [yMin, yMax]
                                   .range colorbrewer.Blues[3]
-
-        # Mouse over player-bar
-            vidTipHTML = (d) ->
-              """
-              <div class='tip-container'>
-                <div class='name'><h4>#{d.Player}<h4></div>
-                <div class='youtube'>
-                  <iframe width='280' height='158' src='http://www.youtube.com/embed/#{d.Vid}?rel=0&amp;vq=small&amp;modestbranding=1' frameborder='0'></iframe>
-                </div>
-              </div>
-              """
-
-            vidTip = d3.tip()
-                    .attr("class", "d3-tip")
-                    .html((d) -> vidTipHTML d )
-                    .offset([10, 120])
-
-            # showVidTip = ()
+    
 
             playerGoals = chart.selectAll(".ranges")
                                 .data(scope.data)
@@ -144,14 +135,23 @@ angular.module('soccercomparisonApp')
                                     else
                                         "ranges Female"
                                         )
-                                .call(vidTip)
+                                # .call(vidTip)
                                 .on("mouseover", (d, i) ->
-                                  vidTip.show(scope.data[i])
+                                  # vidTip.show(scope.data[i])
+
+                                  playerData  = scope.data[i]
+                                  playerHTML = """
+                                                <h3>#{playerData.Player} scored #{playerData.Goals} goals in #{playerData.Caps}</h3>
+                                                <div class='youtube'>
+                                                  <iframe width='280' height='158' src='http://www.youtube.com/embed/#{playerData.Vid}?rel=0&amp;vq=small&amp;modestbranding=1' frameborder='0'></iframe>
+                                                </div>
+                                               """
                                   
+                                  d3.select("#player-legend").html(playerHTML)
+                                  d3.select(".youtube").transition().duration(1800).ease("cubic").style("opacity", "1")                                  
                                   d3.select("#name-legend").text(scope.data[i].Player)
                                   d3.select("#goals-legend").text("Goals: #{scope.data[i].Goals}")                                  
                                   )
-
                                 .append("rect")
                                 .attr("x", (d) -> 
                                   xScale(d.Player)) # adjust labels, not position of bars
@@ -170,7 +170,6 @@ angular.module('soccercomparisonApp')
                                   if d.Gender is "Female" then femaleColors((+d.Goals * 2.5) + 80)
                                   else maleColors((+d.Goals * 6) + 140 )) 
 
-                                
             # adjust labels to top left of bar
             d3.selectAll("g.x.axis .tick")
                 .attr("id", (d) -> return d)
@@ -218,8 +217,9 @@ angular.module('soccercomparisonApp')
                      .zoom()
                      .scaleExtent [1,10]
                      .on("zoom", ->
-                          chart.attr("transform", "translate(#{d3.event.translate}) scale(#{d3.event.scale})"))
-            chart.select("g").call zoom
+                          chart.attr("transform", "translate(#{d3.event.translate}) scale(#{d3.event.scale})")
+                          return)
+            d3.select("#chart-container").call(zoom)
 
         # Flash y-axis ticks on goalSprite build.
             d3.selectAll(".y.axis .tick:nth-child(18) line, .y.axis .tick:nth-child(18) text")
@@ -236,7 +236,9 @@ angular.module('soccercomparisonApp')
 
             )
         scope.$on('$viewContentLoaded', () ->
-          chart.call(legend)
-          legend.show("data", chart.node())
+          chart.call(colorLegend)
+          chart.call(playerLegend)
+          colorLegend.show("data", chart.node())
+          playerLegend.show("data", chart.node())
           )
   )
