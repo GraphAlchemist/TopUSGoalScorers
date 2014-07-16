@@ -13,11 +13,11 @@ angular.module('soccercomparisonApp')
         bounceDelay = 1200
 
         goalColors = { "Male": ["#FFF", "#008"], "Female": ["#FFF", "#700"] }
-        
+
         margin = {top: 20, left: 20, bottom: 20, right: 20}
         scaleFactor = 0.8
         height = angular.element(document).height() * scaleFactor - margin.top - margin.bottom
-        width = angular.element(document).width() * scaleFactor- margin.left - margin.right
+        width = angular.element(document).width() * scaleFactor - margin.left - margin.right
 
         chart = d3.select(element[0]).append('svg')
                                          .attr("id", "chart")
@@ -25,7 +25,6 @@ angular.module('soccercomparisonApp')
                                          .attr("width", width + margin.right + margin.left)
                                          .append('g')
 
-        
         yScale = d3.scale.linear()
                     .range([height, 0]) # note that the yaxis is inverted! 0 = top
         yAxis = d3.svg.axis()
@@ -49,9 +48,14 @@ angular.module('soccercomparisonApp')
 
         chart.on("mousemove", ()->
           y = d3.mouse(this)[1]
-          
+          goalNum = Math.floor(yScale.invert(y))          
           d3.select("#scrubBar").attr({"y1": y,"y2": y})
-          d3.select("#xAxisNum").attr({"y": y}).text(y)
+          d3.select("#xAxisNum").attr({"y": y}).text(goalNum)
+          records = [167,158,130,105,100,74,60,57,53,50,46,39,34,30,24,23,21,19,17]
+          if goalNum in records
+            d3.select("#scrubBar").attr("style", "stroke-width: 2.5px;")
+          else
+            d3.select("#scrubBar").attr("style", "")
           )         
 
         legendHTML =
@@ -62,11 +66,11 @@ angular.module('soccercomparisonApp')
 
               <div id='male-legend'>
                 <div id='male-box'></div>
-                <h2 id='male-text'>Male</h2>
+                <h2 id='male-text'>Men's team</h2>
               </div>
               <div id='female-legend'>
                 <div id='female-box'></div>
-                <h2 id='female-text'>Female</h2>
+                <h2 id='female-text'>Women's team</h2>
               </div>
             </div>
             """
@@ -141,21 +145,19 @@ angular.module('soccercomparisonApp')
                                         "ranges Female"
                                         )
                                 .call(vidTip)
+                                .on("mouseover", (d, i) ->
+                                  vidTip.show(scope.data[i])
+                                  
+                                  d3.select("#name-legend").text(scope.data[i].Player)
+                                  d3.select("#goals-legend").text("Goals: #{scope.data[i].Goals}")                                  
+                                  )
+
                                 .append("rect")
                                 .attr("x", (d) -> 
                                   xScale(d.Player)) # adjust labels, not position of bars
                                 .attr("y", (d) -> yScale(+d.Goals + barPadding)) # note that the yaxis is inverted! 0 = top
                                 .attr("width", xScale.rangeBand())
                                 .attr("height", 0)
-                                .on("mouseover", (d, i) ->
-                                  vidTip.show(scope.data[i])
-                                  # goalNumber = Math.floor(yScale.invert(d3.event.y))
-                                  # goalTick = d3.select("#goal-#{goalNumber}").style("display", "inline")
-                                  playerIndex = d3.select(this.parentNode).attr("id").match(/\d\d?/)
-                                  playerData  = scope.data[playerIndex]
-                                  d3.select("#name-legend").text(playerData.Player)
-                                  d3.select("#goals-legend").text("Goals: #{playerData.Goals}")
-                                  )
                                 .transition()
                                 .duration(bounceDelay)
                                 .ease("bounce")
@@ -164,6 +166,10 @@ angular.module('soccercomparisonApp')
                                   # genderColors((d.Goals * rangeOfContrast) + manualDarkening)
                                   if d.Gender is "Female" then femaleColors((+d.Goals * 2.5) + 80)
                                   else if d.Gender is "Male" then maleColors((+d.Goals * 6) + 140 ))
+                                .style("stroke", (d)->
+                                  if d.Gender is "Female" then femaleColors((+d.Goals * 2.5) + 80)
+                                  else maleColors((+d.Goals * 6) + 140 )) 
+
                                 
             # adjust labels to top left of bar
             d3.selectAll("g.x.axis .tick")
@@ -213,7 +219,7 @@ angular.module('soccercomparisonApp')
                      .scaleExtent [1,10]
                      .on("zoom", ->
                           chart.attr("transform", "translate(#{d3.event.translate}) scale(#{d3.event.scale})"))
-            chart.call zoom
+            chart.select("g").call zoom
 
         # Flash y-axis ticks on goalSprite build.
             d3.selectAll(".y.axis .tick:nth-child(18) line, .y.axis .tick:nth-child(18) text")

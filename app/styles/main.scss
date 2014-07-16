@@ -53,15 +53,15 @@ viz {
       }
     }
 
-    // .tick, line, text {
-    //   opacity: 0.3;
-    //   :hover {
-    //     opacity: 1;
-    //   }
-    //   :hover * {
-    //     opacity: 1;
-    //   }
-    // }
+    .tick, line, text {
+      opacity: 0.3;
+       :hover {
+         opacity: 1;
+       }
+       :hover * {
+         opacity: 1;
+       }
+    }
   }
   .x.axis {
     stroke: black;
@@ -76,25 +76,30 @@ viz {
     }
   }
   .ranges {
+    stroke-width: 0;
     &.Female {
-      fill: red;
       :hover {
         fill-opacity: 0.8;
+        transition: 0.3s ease;
+        stroke-width: 2px;
+        stroke-opacity: 0.8 !important;
       };
     };
     &.Male {
-      fill: blue;
       :hover {
         fill-opacity: 0.8;
-      };
+        transition: 0.5s ease;
+        stroke-width: 2px;
+        stroke-opacity: 0.8 !important;
+      }
     }
   }
   circle {
     fill: black;
     fill-opacity: 0.5;
-    stroke-fill: white;
+    /*stroke-fill: white;*/
     stroke-opacity: 1;
-    stroke-width: 1px;
+    stroke-width: 0 !important;
   }
 }
 
