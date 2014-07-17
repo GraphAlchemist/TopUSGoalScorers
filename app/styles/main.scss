@@ -70,6 +70,7 @@ body {
 }
 
 viz {
+  cursor: pointer;
   margin-top: 80px;
   #chart {
     border: #F0F8FF 3px solid;
@@ -123,6 +124,7 @@ viz {
     }
   }
   .ranges {
+    cursor: default;
     stroke-width: 1;
     &.Female {
 
