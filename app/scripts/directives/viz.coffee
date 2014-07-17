@@ -215,7 +215,7 @@ angular.module('soccercomparisonApp')
 
             scrubBar = chart.append("line")
                             .attr("id", "scrubBar")
-                            .attr({"x1": xScale.rangeBand() * 0.1 * 2 + 1 , "y1": -1, "x2": width - xScale.rangeBand() * 0.1 * 2 - 1, "y2": -1})
+                            .attr({"x1": Math.ceil(xScale.rangeBand() * 0.1 * 2 + 2) , "y1": -1, "x2": Math.ceil(width - (xScale.rangeBand() * 0.1 * 2 - 2)), "y2": -1})
 
             xAxisNum = chart.append("text")
                             .attr("id", "xAxisNum")
