@@ -121,7 +121,7 @@ angular.module('soccercomparisonApp')
 
                                   playerData  = scope.data[i]
                                   playerHTML = """
-                                                <h3>#{playerData.Player} scored #{playerData.Goals} goals in #{playerData.Caps}</h3>
+                                                <h3>#{playerData.Player} scored #{playerData.Goals} goals in #{playerData.caps} games.</h3>
                                                 <div class='youtube'>
                                                   <iframe width='360' height='204' src='http://www.youtube.com/embed/#{playerData.Vid}?rel=0&amp;vq=small&amp;modestbranding=1' frameborder='0'></iframe>
                                                 </div>
@@ -215,20 +215,20 @@ angular.module('soccercomparisonApp')
 
             scrubBar = chart.append("line")
                             .attr("id", "scrubBar")
-                            .attr({"x1": 0, "y1": -1, "x2": width, "y2": -1})
-            
+                            .attr({"x1": xScale.rangeBand() * 0.1 * 2 + 1 , "y1": -1, "x2": width - xScale.rangeBand() * 0.1 * 2 - 1, "y2": -1})
+
             xAxisNum = chart.append("text")
                             .attr("id", "xAxisNum")
-                            .attr({"x": width, "y": -1})
+                            .attr({"x": width - 70, "y": -1})
 
             chart.on("mousemove", ()->
               y = d3.mouse(this)[1]
               goalNum = Math.floor(yScale.invert(y))          
               d3.select("#scrubBar").attr({"y1": y - 2,"y2": y - 2})
-              d3.select("#xAxisNum").attr({"y": y}).text(goalNum)
+              d3.select("#xAxisNum").attr({"y": y - 20}).text("#{goalNum} goals")
               records = [167,158,130,105,100,74,60,57,53,50,46,39,34,30,24,23,21,19,17]
               if goalNum in records
-                d3.select("#scrubBar").attr("style", "stroke-width: 2.5px;")
+                d3.select("#scrubBar").attr("style", "stroke-width: 2px;")
               else
                 d3.select("#scrubBar").attr("style", "")
               )         

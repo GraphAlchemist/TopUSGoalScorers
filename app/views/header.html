@@ -1,5 +1,29 @@
 <div class="navbar navbar-default header navbar-inverse">
-    <div class="container-fluid">
-        <h1 style="display:inline-block;">US Soccer's Top All Time Goal Scorers</h1><span id="info" class="glyphicon glyphicon-question-sign"></span>
+    <div id="tweet" class="navbar-right">
+        <a href="https://twitter.com/share" class="twitter-share-button" data-text="Data Visualization: Top All Time Goal Scorers - US Soccer" data-via="GraphAlchemist" data-size="large">Tweet</a>
+        <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+    </div>
+    <h1>US Soccer's Top All Time Goal Scorers<div id="info" class="glyphicon glyphicon-question-sign pull-right"
+    ng-click="showModal()"></div></h1>
+
+    <div class="modal fade" id="info-modal" tabindex="-1" role="dialog" aria-labelledby="infoModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            <h4 class="modal-title" id="infoModalLabel">About</h4>
+          </div>
+          <div class="modal-body">
+            <p>This visualization was built by <a href="http://graphalchemist.com">GraphAlchemist</a> inspired by the<a href="http://jezebel.com/world-cup-soccer-stats-erase-the-sports-most-dominant-p-1601275793">Jezebel article</a> written by Valeria Alexander.  Each bar represents the total number of goals scored by a player, and each dot represents an individual goal scored.</p>
+
+            <p>GraphAlchemist is a Portland, OR based company focused on telling stories with data. We think that data is a powerful tool in conveying just about any type of information.</p>
+
+            <p>We'd love your <a href="https://twitter.com/intent/tweet?text=Hey+%40graphAlchemist%2C+...">feedback</a>!</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
     </div>
 </div>

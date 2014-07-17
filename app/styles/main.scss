@@ -7,17 +7,30 @@ body {
 }
 
 .container {
-  /*padding: 20px;*/
   margin:auto;
 }
 .header {
-  /*margin: 20px 0 20px 0;*/
   text-align: center;
   color: #FFF;
+  padding: auto;
   #info {
     margin-left: 40px;
     font-size: 24px;
-
+    cursor: pointer;
+  }
+  h1{
+    display: inline-block;
+  }
+  #tweet {
+    position: fixed;
+    left: 90%;
+    margin:0.67em;
+  }
+  #info-modal {
+    p {
+      color: #000;
+      font-size: 18px;
+    }
   }
 }
 .footer {
@@ -74,14 +87,17 @@ body {
 
 viz {
   cursor: pointer;
+  #chart-container {
+    // border: #909090 2px solid;
+    padding-top: 20px;
+  }
   margin-top: 80px;
   #chart {
-    border: #F0F8FF 3px solid;
     #scrubBar {
       pointer-events: none;
-      stroke: #000;
-      stroke-width: 0.5px;
-      stroke-dasharray: 1,1;
+      stroke: #6e6e6e;
+      stroke-width: 1px;
+      // stroke-dasharray: 1,1;
     }
     #xAxisNum {
       fill: #000;
@@ -112,7 +128,6 @@ viz {
     }
   }
   .x.axis {
-    stroke: black;
     line {
       display: none;
     }
