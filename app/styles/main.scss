@@ -18,6 +18,7 @@ body {
     font-size: 24px;
     cursor: pointer;
   }
+  #info-modal {color: #333;}
   h1{
     display: inline-block;
   }
@@ -93,6 +94,7 @@ viz {
   }
   margin-top: 80px;
   #chart {
+    cursor:pointer;
     #scrubBar {
       pointer-events: none;
       stroke: #6e6e6e;
@@ -142,7 +144,7 @@ viz {
     }
   }
   .ranges {
-    cursor: default;
+    cursor:crosshair;
     stroke-width: 1;
     &.Female {
 
