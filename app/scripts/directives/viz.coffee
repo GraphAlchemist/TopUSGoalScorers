@@ -232,6 +232,23 @@ angular.module('soccercomparisonApp')
               else
                 d3.select("#scrubBar").attr("style", "")
               )         
+
+            d3.select("#male-legend")
+              .on("mouseenter", ->
+                  d3.selectAll("g.ranges.Male rect")
+                    .classed("legend-hover", true))
+              .on("mouseleave", ->
+                  d3.selectAll("g.ranges.Male rect")
+                    .classed("legend-hover", false))
+
+            d3.select("#female-legend")
+              .on("mouseenter", ->
+                  d3.selectAll("g.ranges.Female rect")
+                    .classed("legend-hover", true))
+              .on("mouseleave", ->
+                  d3.selectAll("g.ranges.Female rect")
+                    .classed("legend-hover", false))
+
             return
 
             )

@@ -11,14 +11,20 @@ body {
 }
 .header {
   margin: 20px 0 20px 0;
+  text-align: center;
+  #info {
+    font-size: 24px;
+
+  }
 }
 .footer {
   padding: 20px 0;
-  color: #777;
-  border-top: 1px solid #E5E5E5;
   position: relative;
   bottom: 0;
   width: 100%;
+  a:hover{
+    text-decoration: none;
+  }
 }
 
 #color-legend {
@@ -27,7 +33,10 @@ body {
       display: inline-block;
       width: 20px;
       height: 20px;
-      background-color: lightblue;
+      background-color: rgba(24, 133, 179, 0.5);
+      &:hover {
+        background-color: rgba(24, 133, 179, 1);
+      }
     }
     #male-text{
       display: inline-block;
@@ -40,7 +49,10 @@ body {
       display: inline-block;
       width: 20px;
       height: 20px;
-      background-color: red;
+      background-color: rgba(250, 55, 2, 0.5);
+      &:hover {
+        background-color: rgba(250, 55, 2, 1);
+      }
     }
     #female-text{
       display: inline-block;
@@ -60,6 +72,7 @@ body {
 viz {
   margin-top: 80px;
   #chart {
+    border: #F0F8FF 3px solid;
     #scrubBar {
       pointer-events: none;
       stroke: #000;
@@ -112,6 +125,11 @@ viz {
   .ranges {
     stroke-width: 1;
     &.Female {
+
+      .legend-hover {
+        fill: rgba(250, 55, 2, 0.5) !important;
+      }
+
       :hover {
         fill-opacity: 0.8;
         transition: 0.3s ease;
@@ -120,6 +138,11 @@ viz {
       };
     };
     &.Male {
+
+      .legend-hover {
+        fill: rgba(24, 133, 179, 0.5) !important;
+      }
+
       :hover {
         fill-opacity: 0.8;
         transition: 0.5s ease;
@@ -166,11 +189,3 @@ viz {
 //   -ms-filter: blur(20px);
 //   filter: blur(20px);
 // }
-
-.male-legend {
-  fill: rgb(24,133,179);
-}
-
-.female-legend {
-  fill: rgb(248,0,0);
-}
