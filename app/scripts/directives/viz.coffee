@@ -13,11 +13,11 @@ angular.module('soccercomparisonApp')
         bounceDelay = 1200
 
         goalColors = { "Male": ["#FFF", "#008"], "Female": ["#FFF", "#700"] }
-        
+
         margin = {top: 20, left: 20, bottom: 20, right: 20}
         scaleFactor = 0.8
         height = angular.element(document).height() * scaleFactor - margin.top - margin.bottom
-        width = angular.element(document).width() * scaleFactor- margin.left - margin.right
+        width = angular.element(document).width() * scaleFactor - margin.left - margin.right
 
         chart = d3.select(element[0]).append('svg')
                                          .attr("id", "chart-container")
@@ -26,7 +26,6 @@ angular.module('soccercomparisonApp')
                                          .append('g')
                                          .attr("id", "chart")
 
-        
         yScale = d3.scale.linear()
                     .range([height, 0]) # note that the yaxis is inverted! 0 = top
         yAxis = d3.svg.axis()
@@ -40,20 +39,6 @@ angular.module('soccercomparisonApp')
                     .scale(xScale)
                     .orient("bottom")                       
 
-        scrubBar = chart.append("line")
-                        .attr("id", "scrubBar")
-                        .attr({"x1": 0, "y1": -1, "x2": width, "y2": -1})
-        
-        xAxisNum = chart.append("text")
-                        .attr("id", "xAxisNum")
-                        .attr({"x": width, "y": -1})
-
-        chart.on("mousemove", ()->
-          y = d3.mouse(this)[1]
-          
-          d3.select("#scrubBar").attr({"y1": y,"y2": y})
-          d3.select("#xAxisNum").attr({"y": y}).text(y)
-          )         
 
         colorLegendHTML =
             """
@@ -66,7 +51,6 @@ angular.module('soccercomparisonApp')
                   <div id='female-box'></div>
                   <h5 id='female-text'>Women's Team Players</h5>
                 </div>
-              </div>
             """
         
         colorLegend = d3.tip()
@@ -132,22 +116,28 @@ angular.module('soccercomparisonApp')
                                     else
                                         "ranges Female"
                                         )
+                                # .call(vidTip)
+                                .on("mouseenter", (d, i) ->
+
+                                  playerData  = scope.data[i]
+                                  playerHTML = """
+                                                <h3>#{playerData.Player} scored #{playerData.Goals} goals in #{playerData.caps} games.</h3>
+                                                <div class='youtube'>
+                                                  <iframe width='360' height='204' src='http://www.youtube.com/embed/#{playerData.Vid}?rel=0&amp;vq=small&amp;modestbranding=1' frameborder='0'></iframe>
+                                                </div>
+                                               """
+                                  if d3.select("#player-legend").html().search(playerData.Vid) == (-1)
+                                    d3.select("#player-legend").html(playerHTML)
+                                    d3.select(".youtube").transition().duration(1800).ease("cubic").style("opacity", "1")                                  
+                                    d3.select("#name-legend").text(scope.data[i].Player)
+                                    d3.select("#goals-legend").text("Goals: #{scope.data[i].Goals}")                                  
+                                  )
                                 .append("rect")
                                 .attr("x", (d) -> 
                                   xScale(d.Player)) # adjust labels, not position of bars
                                 .attr("y", (d) -> yScale(+d.Goals + barPadding)) # note that the yaxis is inverted! 0 = top
                                 .attr("width", xScale.rangeBand())
                                 .attr("height", 0)
-                                .on("mouseover", (d, i) ->
-                                  playerData  = scope.data[i]
-                                  playerHTML = """
-                                                <h3>#{playerData.Player} scored #{playerData.Goals} goals in #{playerData.caps} games.</h3>
-                                                <div class='youtube'>
-                                                  <iframe width='280' height='158' src='http://www.youtube.com/embed/#{playerData.Vid}?rel=0&amp;vq=small&amp;modestbranding=1' frameborder='0'></iframe>
-                                                </div>
-                                               """
-                                  d3.select("#player-legend").html(playerHTML)
-                                  )
                                 .transition()
                                 .duration(bounceDelay)
                                 .ease("bounce")
@@ -156,7 +146,10 @@ angular.module('soccercomparisonApp')
                                   # genderColors((d.Goals * rangeOfContrast) + manualDarkening)
                                   if d.Gender is "Female" then femaleColors((+d.Goals * 2.5) + 80)
                                   else if d.Gender is "Male" then maleColors((+d.Goals * 6) + 140 ))
-             
+                                .style("stroke", (d)->
+                                  if d.Gender is "Female" then femaleColors((+d.Goals * 2.5) + 80)
+                                  else maleColors((+d.Goals * 6) + 140 )) 
+
             # adjust labels to top left of bar
             d3.selectAll("g.x.axis .tick")
                 .attr("id", (d) -> return d)
@@ -190,6 +183,7 @@ angular.module('soccercomparisonApp')
                              .attr("cy", (d) ->  yScale(d))
                              .classed("goal", true)
                              .style("opacity", 0)
+                             # .on("mouseover", -> d3.select(this).style({"fill": "white", "fill-opacity": 1}))
                              .transition()
                              .delay((d,i)-> 
                                   bounceDelay + i * ( i / 10 ) )
@@ -219,6 +213,26 @@ angular.module('soccercomparisonApp')
               .duration(4000)
               .attr("style", "opacity: 0.3; stroke-width: 1px;")
 
+            scrubBar = chart.append("line")
+                            .attr("id", "scrubBar")
+                            .attr({"x1": 0, "y1": -1, "x2": width, "y2": -1})
+            
+            xAxisNum = chart.append("text")
+                            .attr("id", "xAxisNum")
+                            .attr({"x": width, "y": -1})
+
+            chart.on("mousemove", ()->
+              y = d3.mouse(this)[1]
+              goalNum = Math.floor(yScale.invert(y))          
+              d3.select("#scrubBar").attr({"y1": y - 2,"y2": y - 2})
+              d3.select("#xAxisNum").attr({"y": y}).text(goalNum)
+              records = [167,158,130,105,100,74,60,57,53,50,46,39,34,30,24,23,21,19,17]
+              if goalNum in records
+                d3.select("#scrubBar").attr("style", "stroke-width: 2.5px;")
+              else
+                d3.select("#scrubBar").attr("style", "")
+              )         
+
             d3.select("#male-legend")
               .on("mouseenter", ->
                   d3.selectAll("g.ranges.Male rect")
@@ -234,6 +248,7 @@ angular.module('soccercomparisonApp')
               .on("mouseleave", ->
                   d3.selectAll("g.ranges.Female rect")
                     .classed("legend-hover", false))
+
             return
 
             )
