@@ -141,7 +141,7 @@ angular.module('soccercomparisonApp')
                                 .on("mouseover", (d, i) ->
                                   playerData  = scope.data[i]
                                   playerHTML = """
-                                                <h3>#{playerData.Player} scored #{playerData.Goals} goals in #{playerData.Caps}</h3>
+                                                <h3>#{playerData.Player} scored #{playerData.Goals} goals in #{playerData.caps} games.</h3>
                                                 <div class='youtube'>
                                                   <iframe width='280' height='158' src='http://www.youtube.com/embed/#{playerData.Vid}?rel=0&amp;vq=small&amp;modestbranding=1' frameborder='0'></iframe>
                                                 </div>

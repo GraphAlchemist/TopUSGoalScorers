@@ -5,7 +5,8 @@
     "First":"2001",
     "Latest":"2013",
     "Gender":"Female",
-    "Vid":"jCar99nTSxA"
+    "Vid":"jCar99nTSxA",
+    "caps": 221
   },
   {
     "Player":"Mia Hamm",
@@ -13,7 +14,8 @@
     "First":"1987",
     "Latest":"2004",
     "Gender":"Female",
-    "Vid":"daVcy0Zvb0U"
+    "Vid":"daVcy0Zvb0U",
+    "caps": 275
   },
   {
     "Player":"Kristine Lilly",
@@ -21,7 +23,8 @@
     "First":"1987",
     "Latest":"2010",
     "Gender":"Female",
-    "Vid":"j5yiX0JYqB8"
+    "Vid":"j5yiX0JYqB8",
+    "caps": 352
   },
   {
     "Player":"Michelle Akers",
@@ -29,7 +32,8 @@
     "First":"1985",
     "Latest":"2000",
     "Gender":"Female",
-    "Vid":"2S_GDZVW5AQ"
+    "Vid":"2S_GDZVW5AQ",
+    "caps": 153
   },
   {
     "Player":"Tiffeny Milbrett",
@@ -37,7 +41,8 @@
     "First":"1992",
     "Latest":"2006",
     "Gender":"Female",
-    "Vid":"IErKhdQt_8c"
+    "Vid":"IErKhdQt_8c",
+    "caps": 204
   },
   {
     "Player":"Cindy Parlow",
@@ -45,7 +50,8 @@
     "First":"1995",
     "Latest":"2006",
     "Gender":"Female",
-    "Vid":"_Qo6CFf5vWU"
+    "Vid":"_Qo6CFf5vWU",
+    "caps": 158
   },
   {
     "Player":"Shannon MacMillan",
@@ -53,7 +59,8 @@
     "First":"1994",
     "Latest":"2006",
     "Gender":"Female",
-    "Vid":"ctzOPOD_Lwg"
+    "Vid":"ctzOPOD_Lwg",
+    "caps": 176
   },
   {
     "Player":"Landon Donovan",
@@ -69,7 +76,8 @@
     "First":"1987",
     "Latest":"1996",
     "Gender":"Female",
-    "Vid":"null"
+    "Vid":"https://www.youtube.com/watch?v=2l3_hCczoxk",
+    "caps": 117
   },
   {
     "Player":"Carli Lloyd",
@@ -77,7 +85,8 @@
     "First":"2005",
     "Latest":"2005",
     "Gender":"Female",
-    "Vid":"c4bHF5J2oOg"
+    "Vid":"c4bHF5J2oOg",
+    "caps": 173
   },
   {
     "Player":"Alex Morgan",
@@ -85,7 +94,8 @@
     "First":"2010",
     "Latest":"2013",
     "Gender":"Female",
-    "Vid":"MDV7irsmdw0"
+    "Vid":"MDV7irsmdw0",
+    "caps": 72
   },
   {
     "Player":"Clint Dempsey",

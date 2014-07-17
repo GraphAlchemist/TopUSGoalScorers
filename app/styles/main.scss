@@ -14,7 +14,15 @@ body {
   text-align: center;
   #info {
     font-size: 24px;
-
+    cursor: pointer;
+  }
+  #tweet {
+    margin-left: 10px
+  }
+  #info-modal {
+    p {
+      font-size: 18px;
+    }
   }
 }
 .footer {
@@ -69,9 +77,12 @@ body {
 }
 
 viz {
+  #chart-container {
+    // border: #909090 2px solid;
+    padding-top: 20px;
+  }
   margin-top: 80px;
   #chart {
-    border: #F0F8FF 3px solid;
     #scrubBar {
       stroke: #000;
       stroke-width: 0.5px;
@@ -106,7 +117,6 @@ viz {
     // }
   }
   .x.axis {
-    stroke: black;
     line {
       display: none;
     }
