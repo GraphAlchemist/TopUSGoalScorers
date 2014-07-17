@@ -7,12 +7,15 @@ body {
 }
 
 .container {
-  padding: 20px 0 20px 0;
+  /*padding: 20px;*/
+  margin:auto;
 }
 .header {
-  margin: 20px 0 20px 0;
+  /*margin: 20px 0 20px 0;*/
   text-align: center;
+  color: #FFF;
   #info {
+    margin-left: 40px;
     font-size: 24px;
 
   }
