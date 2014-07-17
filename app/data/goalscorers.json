@@ -61,7 +61,8 @@
     "First":"25-Oct-00",
     "Latest":"10-Sep-13",
     "Gender":"Male",
-    "Vid":"mRWHkER_Ou4"
+    "Vid":"mRWHkER_Ou4",
+    "Caps":156
   },
   {
     "Player":"Carin Jennings-Gabarra",
@@ -93,7 +94,8 @@
     "First":"28-May-05",
     "Latest":"22-Jun-14",
     "Gender":"Male",
-    "Vid":"wlcQq2mOS10"
+    "Vid":"wlcQq2mOS10",
+    "Caps":109
   },
   {
     "Player":"Eric Wynalda",
@@ -101,7 +103,8 @@
     "First":"4-Feb-90",
     "Latest":"12-Feb-00",
     "Gender":"Male",
-    "Vid":"0TIanG77z68"
+    "Vid":"0TIanG77z68",
+    "Caps":106
   },
   {
     "Player":"Brian McBride",
@@ -109,7 +112,8 @@
     "First":"3-Nov-96",
     "Latest":"28-May-06",
     "Gender":"Male",
-    "Vid":"tOev7CzGu5k"
+    "Vid":"tOev7CzGu5k",
+    "Caps":95
   },
   {
     "Player":"Joe-Max Moore",
@@ -117,7 +121,8 @@
     "First":"31-Jan-93",
     "Latest":"7-Oct-01",
     "Gender":"Male",
-    "Vid":"1nL1yRt849Q"
+    "Vid":"1nL1yRt849Q",
+    "Caps":200
   },
   {
     "Player":"Jozy Altidore",
@@ -125,7 +130,8 @@
     "First":"6-Feb-08",
     "Latest":"7-Jun-14",
     "Gender":"Male",
-    "Vid":"MrAHC5B7USA"
+    "Vid":"MrAHC5B7USA",
+    "Caps":71
   },
   {
     "Player":"Bruce Murray",
@@ -133,7 +139,8 @@
     "First":"7-Feb-86",
     "Latest":"3-Mar-93",
     "Gender":"Male",
-    "Vid":"null"
+    "Vid":"null",
+    "Caps":86
   },
   {
     "Player":"Eddie Johnson",
@@ -141,7 +148,8 @@
     "First":"9-Oct-04",
     "Latest":"10-Sep-13",
     "Gender":"Male",
-    "Vid":"AjmCOg14B5g"
+    "Vid":"AjmCOg14B5g",
+    "Caps":63
   },
   {
     "Player":"DaMarcus Beasley",
@@ -149,7 +157,8 @@
     "First":"19-Jan-02",
     "Latest":"11-Oct-08",
     "Gender":"Male",
-    "Vid":"QslfCHkdojs"
+    "Vid":"QslfCHkdojs",
+    "Caps":120
   },
   {
     "Player":"Earnie Stewart",
@@ -157,6 +166,7 @@
     "First":"13-Jun-93",
     "Latest":"26-Jul-03",
     "Gender":"Male",
-    "Vid":"Fixaym_Rq-I"
+    "Vid":"Fixaym_Rq-I",
+    "Caps":101
   }
 ]
