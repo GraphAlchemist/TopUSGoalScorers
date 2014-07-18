@@ -6,40 +6,54 @@ body {
   font-weight: 200;
 }
 
-.container {
-  margin:auto;
-}
-.header {
-  text-align: center;
-  color: #FFF;
-  padding: auto;
-  #info {
-    margin-left: 40px;
-    font-size: 24px;
-    cursor: pointer;
-  }
-  h1{
-    display: inline-block;
-  }
-  #tweet {
-    position: fixed;
-    left: 90%;
-    margin:0.67em;
-  }
-  #info-modal {
-    p {
-      color: #000;
-      font-size: 18px;
+@media min-width(720px) {
+  .header {
+    text-align: center;
+    color: #FFF;
+    padding: auto;
+    #info {
+      margin-left: 40px;
+      font-size: 24px;
+      cursor: pointer;
+    }
+    h1{
+      display: inline-block;
+    }
+    #tweet {
+      position: fixed;
+      left: 90%;
+      margin:0.67em;
+    }
+    #info-modal {
+      p {
+        color: #000;
+        font-size: 18px;
+      }
     }
   }
+  .footer {
+    padding: 20px 0;
+    position: relative;
+    bottom: 0;
+    width: 100%;
+    a:hover{
+      text-decoration: none;
+    }
+  }
+  .container {
+    margin:auto;
+  }
 }
-.footer {
-  padding: 20px 0;
-  position: relative;
-  bottom: 0;
-  width: 100%;
-  a:hover{
-    text-decoration: none;
+
+@media max-width(720px){
+  .header{
+    display: none;
+  }
+  .container {
+    margin: 2px;
+  }
+  circle{
+    display: none;
   }
 }
 
