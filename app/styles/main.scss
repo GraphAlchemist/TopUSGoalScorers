@@ -6,7 +6,7 @@ body {
   font-weight: 200;
 }
 
-@media min-width(720px) {
+@media (min-width: 720px) {
   .header {
     text-align: center;
     color: #FFF;
@@ -43,17 +43,44 @@ body {
   .container {
     margin:auto;
   }
+  #player-legend {
+    text-align: center;
+  }
 }
 
-@media max-width(720px){
-  .header{
+@media (max-width: 720px){
+  body{
+    font-size: 10px !important;
+  }
+
+  .header, circle, .youtube, .footer{
     display: none;
   }
   .container {
     margin: 2px;
+    margin-bottom: -50px;
+    padding: 0; 
   }
-  circle{
-    display: none;
+
+  #color-legend {
+    #male-legend, #male-box, #female-legend, #female-box {
+      display: inline-block !important;
+      padding: 0;
+      margin: 0;
+    }
+  }
+
+  .d3-tip{
+    position: relative !important;
+    top: 0 !important;
+    left: 10px !important;
+    display: inline-block !important;
+    h1, h2, h3, h5, text {
+      font-style: bold;
+      font-size: 14px;
+      margin: 0;
+      padding: 0;
+    }
   }
 }
 
@@ -92,7 +119,6 @@ body {
 }
 
 #player-legend {
-  text-align: center;
   .youtube {
     opacity: 0;
     margin: auto; 
