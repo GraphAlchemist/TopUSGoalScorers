@@ -10,6 +10,7 @@ angular.module('soccercomparisonApp')
   .directive('viz', ->
     restrict: 'E'
     link: (scope, element, attrs) ->
+        # $$window = $ $window
         bounceDelay = 1200
 
         goalColors = { "Male": ["#FFF", "#008"], "Female": ["#FFF", "#700"] }
@@ -252,10 +253,12 @@ angular.module('soccercomparisonApp')
             return
 
             )
-        scope.$on('$viewContentLoaded', () ->
-          chart.call(colorLegend)
-          chart.call(playerLegend)
-          colorLegend.show("data", chart.node())
-          playerLegend.show("data", chart.node())
+        scope.$watch('scope.contentLoaded', ()->
+          scope.$on('$viewContentLoaded', () ->
+            chart.call(colorLegend)
+            chart.call(playerLegend)
+            colorLegend.show("data", chart.node())
+            playerLegend.show("data", chart.node())
           )
+        )
   )

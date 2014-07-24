@@ -10,6 +10,9 @@
 angular.module('soccercomparisonApp')
   .controller 'MainCtrl', ['$scope'
   ($scope) ->
+    $scope.$on('$includeContentLoaded', () ->
+    		$scope.contentLoaded = true
+    	)
 
     $scope.showModal = -> $('#info-modal').modal('show')
     ]
